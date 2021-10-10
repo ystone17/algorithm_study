@@ -1,0 +1,23 @@
+ System.out.println();
+        for (int[][] ints : board) {
+            for (int[] anInt : ints) {
+                for (int i : anInt) {
+                    System.out.printf("%2d ", i);
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+        System.out.println();
+
+        System.out.println();
+        for (int[][] ints : day) {
+            for (int[] anInt : ints) {
+                for (int i : anInt) {
+                    System.out.printf("%2d ", i);
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+        System.out.println();
