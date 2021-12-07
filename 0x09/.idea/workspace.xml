@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cde27a40-7a7c-4629-b1f5-b2ba190f7912" name="Default Changelist" comment="" />
+    <list default="true" id="cde27a40-7a7c-4629-b1f5-b2ba190f7912" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/16920/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/16920/src/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +18,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
       <filtered-out-file-type name="LOCAL_BRANCH" />
@@ -23,6 +30,7 @@
     </file-type-list>
   </component>
   <component name="ProjectId" id="1xoae2yMhUZLsDnVUZ1Ckp6gGBS" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -30,6 +38,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -86,6 +95,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Main (5)" />
       <item itemvalue="Application.Main" />
@@ -129,12 +149,24 @@
       <workItem from="1632881208181" duration="1710000" />
       <workItem from="1633093074566" duration="30700000" />
       <workItem from="1633532503744" duration="14375000" />
-      <workItem from="1633610729072" duration="7132000" />
+      <workItem from="1633610729072" duration="8022000" />
+      <workItem from="1634063738624" duration="3438000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -156,8 +188,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/16920/src/Main.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="30" />
+          <line>164</line>
+          <option name="timeStamp" value="38" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -168,16 +200,16 @@
     </pin-to-top-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="q" />
-        <watch expression="tempQ" />
-        <watch expression="now" />
-        <watch expression="tempNow" />
-        <watch expression="nextN" />
-        <watch expression="nextM" />
-        <watch expression="res" />
+        <watch expression="Main.board" language="JAVA" />
+        <watch expression="bfsQ" />
+        <watch expression="size" />
+        <watch expression="cur" />
+        <watch expression="nN" />
+        <watch expression="nM" />
         <watch expression="visited" />
-        <watch expression="((Node)((LinkedList)q).get(1)).p" custom="java.util.LinkedList,Main.Node" />
-        <watch expression="visited" language="JAVA" />
+        <watch expression="board[nN][nM]" language="JAVA" />
+        <watch expression="visited[nN][nM]" language="JAVA" />
+        <watch expression="res" />
       </configuration>
     </watches-manager>
   </component>

@@ -1,0 +1,9 @@
+Could not create query for 
+public abstract java.util.List io.sngy.aedr.schedule.repository.ScheduleRepository.findAllByDateBetween(java.lang.String,java.time.LocalDate,java.time.LocalDate)! 
+
+Reason: Using named parameters 
+
+for method public abstract java.util.List io.sngy.aedr.schedule.repository.ScheduleRepository.findAllByDateBetween(java.lang.String,java.time.LocalDate,java.time.LocalDate) 
+
+but parameter 'Optional[customerNum]' not found in annotated query 'select s.id, s.created_at, s.updated_at, s.customer_num, calendar.date, s.name, s.note
+from schedule as s
