@@ -21,91 +21,296 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             map[yIdx] = st.nextToken().toCharArray();
             for (int xIdx = 0; xIdx < map[yIdx].length; xIdx++) {
-                if(map[yIdx][xIdx] == 'R'){
+                if (map[yIdx][xIdx] == 'R') {
                     rY = yIdx;
                     rX = xIdx;
-                } else if(map[yIdx][xIdx] == 'B'){
+                } else if (map[yIdx][xIdx] == 'B') {
                     bY = yIdx;
                     bX = xIdx;
                 }
             }
         }
 
-        for (char[] chars : map) {
-            for (char aChar : chars) {
-                System.out.printf("%c",aChar);
-            }
-            System.out.println();
-        }
-        System.out.printf("%d %d\n", rY, rX);
-        System.out.println();
-        System.out.println();
-        char[][] rotate = rotate(map);
-        for (char[] chars : rotate) {
-            for (char aChar : chars) {
-                System.out.printf("%c",aChar);
-            }
-            System.out.println();
-        }
+        int res = Integer.MAX_VALUE;
+        res = Math.min(res, game(0, 1, map, rY, rX, bY, bX));
+        res = Math.min(res, game(0, 2, map, rY, rX, bY, bX));
+        res = Math.min(res, game(0, 3, map, rY, rX, bY, bX));
+        res = Math.min(res, game(0, 4, map, rY, rX, bY, bX));
 
+        if (res > 10) {
+            System.out.println(-1);
+        } else {
+            System.out.println(res);
+        }
 
 
     }
 
-
-    static int game(char[][] map, int moveNum, int rY, int rX, int bY, int bX) {
-        if (moveNum > 10 || rY == -1 && rX == -1 && bY != -1 && bX != -1) {
-            return moveNum;
+    static int game(int num, int dir, char[][] map, int rY, int rX, int bY, int bX) {
+        if (num > 10) {
+            return num;
         }
 
-        for (int i = 0; i < 4; i++) {
-            map = rotate(map);
-
-//            1. 방향돌리기;
-//            2. 갈수 있는지 체크;
-//            3. 구슬 움직이고;
-//            4. temp();
-//            5. 최솟값 구하고
-
+        char[][] nMap = new char[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            System.arraycopy(map[i], 0, nMap[i], 0, map[i].length);
         }
-        return 10;
 
+        int res = Integer.MAX_VALUE;
+        boolean red = false, blue = false;
+        switch (dir) {
+            case 1:
+                if (bX > rX) {
+                    char temp = nMap[bY][bX];
+                    for (int x = bX + 1; x < nMap[bY].length; x++) {
+                        if (nMap[bY][x] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[bY][x] != '.') {
+                            nMap[bY][bX] = nMap[bY][x - 1];
+                            nMap[bY][x - 1] = temp;
+                            bX = x - 1;
+                            break;
+                        }
+                    }
+                    temp = nMap[rY][rX];
+                    for (int x = rX + 1; x < nMap[rY].length; x++) {
+                        if (nMap[rY][x] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[rY][x] != '.') {
+                            nMap[rY][rX] = nMap[rY][x - 1];
+                            nMap[rY][x - 1] = temp;
+                            rX = x - 1;
+                            break;
+                        }
+                    }
+                } else {
+                    char temp = nMap[rY][rX];
+                    for (int x = rX + 1; x < nMap[rY].length; x++) {
+                        if (nMap[rY][x] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[rY][x] != '.') {
+                            nMap[rY][rX] = nMap[rY][x - 1];
+                            nMap[rY][x - 1] = temp;
+                            rX = x - 1;
+                            break;
+                        }
+                    }
+                    temp = nMap[bY][bX];
+                    for (int x = bX + 1; x < nMap[bY].length; x++) {
+                        if (nMap[bY][x] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[bY][x] != '.') {
+                            nMap[bY][bX] = nMap[bY][x - 1];
+                            nMap[bY][x - 1] = temp;
+                            bX = x - 1;
+                            break;
+                        }
+                    }
+
+                }
+                break;
+            case 2:
+                if (bY > rY) {
+                    char temp = nMap[bY][bX];
+                    for (int y = bY + 1; y < nMap.length; y++) {
+                        if (nMap[y][bX] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[y][bX] != '.') {
+                            nMap[bY][bX] = nMap[y - 1][bX];
+                            nMap[y - 1][bX] = temp;
+                            bY = y - 1;
+                            break;
+                        }
+                    }
+
+                    temp = nMap[rY][rX];
+                    for (int y = rY + 1; y < nMap.length; y++) {
+                        if (nMap[y][rX] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[y][rX] != '.') {
+                            nMap[rY][rX] = nMap[y - 1][rX];
+                            nMap[y - 1][rX] = temp;
+                            rY = y - 1;
+                            break;
+                        }
+                    }
+
+                } else {
+                    char temp = nMap[rY][rX];
+                    for (int y = rY + 1; y < nMap.length; y++) {
+                        if (nMap[y][rX] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[y][rX] != '.') {
+                            nMap[rY][rX] = nMap[y - 1][rX];
+                            nMap[y - 1][rX] = temp;
+                            rY = y - 1;
+                            break;
+                        }
+                    }
+
+                    temp = nMap[bY][bX];
+                    for (int y = bY + 1; y < nMap.length; y++) {
+                        if (nMap[y][bX] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[y][bX] != '.') {
+                            nMap[bY][bX] = nMap[y - 1][bX];
+                            nMap[y - 1][bX] = temp;
+                            bY = y - 1;
+                            break;
+                        }
+                    }
+
+                }
+                break;
+            case 3:
+                if (bX < rX) {
+                    char temp = nMap[bY][bX];
+                    for (int x = bX - 1; x >= 0; x--) {
+                        if (nMap[bY][x] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[bY][x] != '.') {
+                            nMap[bY][bX] = nMap[bY][x + 1];
+                            nMap[bY][x + 1] = temp;
+                            bX = x + 1;
+                            break;
+                        }
+                    }
+                    temp = nMap[rY][rX];
+                    for (int x = rX - 1; x >= 0; x--) {
+                        if (nMap[rY][x] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[rY][x] != '.') {
+                            nMap[rY][rX] = nMap[rY][x + 1];
+                            nMap[rY][x + 1] = temp;
+                            rX = x + 1;
+                            break;
+                        }
+                    }
+                } else {
+                    char temp = nMap[rY][rX];
+                    for (int x = rX - 1; x >= 0; x--) {
+                        if (nMap[rY][x] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[rY][x] != '.') {
+                            nMap[rY][rX] = nMap[rY][x + 1];
+                            nMap[rY][x + 1] = temp;
+                            rX = x + 1;
+                            break;
+                        }
+                    }
+                    temp = nMap[bY][bX];
+                    for (int x = bX - 1; x >= 0; x--) {
+                        if (nMap[bY][x] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[bY][x] != '.') {
+                            nMap[bY][bX] = nMap[bY][x + 1];
+                            nMap[bY][x + 1] = temp;
+                            bX = x + 1;
+                            break;
+                        }
+                    }
+                }
+                break;
+            case 4:
+                if (bY < rY) {
+                    char temp = nMap[bY][bX];
+                    for (int y = bY - 1; y >= 0; y--) {
+                        if (nMap[y][bX] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[y][bX] != '.') {
+                            nMap[bY][bX] = nMap[y + 1][bX];
+                            nMap[y + 1][bX] = temp;
+                            bY = y + 1;
+                            break;
+                        }
+                    }
+
+                    temp = nMap[rY][rX];
+                    for (int y = rY - 1; y >= 0; y--) {
+                        if (nMap[y][rX] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[y][rX] != '.') {
+                            nMap[rY][rX] = nMap[y + 1][rX];
+                            nMap[y + 1][rX] = temp;
+                            rY = y + 1;
+                            break;
+                        }
+                    }
+
+                } else {
+                    char temp = nMap[rY][rX];
+                    for (int y = rY - 1; y >= 0; y--) {
+                        if (nMap[y][rX] == 'O') {
+                            red = true;
+                            nMap[rY][rX] = '.';
+                            break;
+                        } else if (nMap[y][rX] != '.') {
+                            nMap[rY][rX] = nMap[y + 1][rX];
+                            nMap[y + 1][rX] = temp;
+                            rY = y + 1;
+                            break;
+                        }
+                    }
+
+                    temp = nMap[bY][bX];
+                    for (int y = bY - 1; y >= 0; y--) {
+                        if (nMap[y][bX] == 'O') {
+                            blue = true;
+                            nMap[bY][bX] = '.';
+                            break;
+                        } else if (nMap[y][bX] != '.') {
+                            nMap[bY][bX] = nMap[y + 1][bX];
+                            nMap[y + 1][bX] = temp;
+                            bY = y + 1;
+                            break;
+                        }
+                    }
+
+                }
+                break;
+        }
+
+
+        if (blue) {
+            return Integer.MAX_VALUE;
+        } else if (red) {
+            return num + 1;
+        } else {
+            res = Math.min(res, game(num + 1, 1, nMap, rY, rX, bY, bX));
+            res = Math.min(res, game(num + 1, 2, nMap, rY, rX, bY, bX));
+            res = Math.min(res, game(num + 1, 3, nMap, rY, rX, bY, bX));
+            res = Math.min(res, game(num + 1, 4, nMap, rY, rX, bY, bX));
+            return res;
+        }
     }
 
-    static char[][] rotate(char[][] map) {
-        char[][] res = new char[map[0].length][map.length];
 
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++) {
-                res[x][map.length - 1 - y] = map[y][x];
-            }
-        }
-
-        return res;
-    }
 }
-
-/*
-
-#######
-#...BR#
-#.#####
-#.....#
-#####.#
-#O....#
-#######
-
-* */
-
-
-/*
-
-#######
-#....R#
-#.###B#
-#.....#
-#####.#
-#O....#
-#######
-
-* */
