@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 public class Main {
 
     static int n, k;
-    static int[] dp = new int[10001], value = new int[10001];
+    static int[] dp, value;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,21 +17,20 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < n; i++) {
-            value[Integer.parseInt(br.readLine())] = 1;
-        }
+        dp = new int[k + 1];
+        value = new int[n];
 
-        for (int i = 1; i <= k; i++) {
-            if(value[i] == 1) dp[i] = 1;
-            for (int p = 1; p < i; p++) {
-                if(value[p] == 1){
-                    dp[i] += dp[i - p];
-                }
+        for (int i = 0; i < n; i++) {
+            value[i] = Integer.parseInt(br.readLine());
+        }
+        dp[0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int p = value[i]; p <= k; p++) {
+                dp[p] += dp[p - value[i]];
             }
         }
 
         System.out.println(dp[k]);
-
 
 
     }

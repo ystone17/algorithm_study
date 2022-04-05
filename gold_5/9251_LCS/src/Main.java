@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 public class Main {
 
     static char[] a, b;
+    static int[][] dp;
     static int answer, temp, start;
 
     public static void main(String[] args) throws IOException {
@@ -13,33 +14,19 @@ public class Main {
         a = br.readLine().toCharArray();
         b = br.readLine().toCharArray();
 
-        for (int j = 0; j < a.length; j++) {
-            for (int i = start; i < b.length ; i++) {
-                if (b[i] == a[j]) {
-                    start = i + 1;
-                    temp++;
-                    break;
+        dp = new int[a.length + 1][b.length + 1];
+
+        for (int ai = 1; ai <= a.length; ai++) {
+            for (int bi = 1; bi <= b.length; bi++) {
+                if (a[ai - 1] == b[bi - 1]) {
+                    dp[ai][bi] = dp[ai - 1][bi - 1] + 1;
+                } else {
+                    dp[ai][bi] = Math.max(dp[ai - 1][bi], dp[ai][bi - 1]);
                 }
             }
         }
 
-        answer = temp;
-        System.out.println(answer);
-        temp = 0;
-        start = 0;
-        for (int j = 0; j < b.length; j++) {
-            for (int i = start; i < a.length ; i++) {
-                if (a[i] == b[j]) {
-                    start = i + 1;
-                    temp++;
-                    break;
-                }
-            }
-        }
-
-        answer = Math.max(answer, temp);
-        System.out.println(answer);
-
+        System.out.println(dp[a.length][b.length]);
 
     }
 }

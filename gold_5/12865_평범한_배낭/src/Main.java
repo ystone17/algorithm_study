@@ -7,8 +7,9 @@ import java.util.StringTokenizer;
 public class Main {
 
     static int n, kg;
-    //    static int[] weight, value, dp;
-    static Goods[] goods;
+    static int[] weight, value;
+    static int[][] dp;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,53 +19,28 @@ public class Main {
 
         n = Integer.parseInt(st.nextToken());
         kg = Integer.parseInt(st.nextToken());
-        goods = new Goods[n];
+
+        weight = new int[n + 1];
+        value = new int[n + 1];
+        dp = new int[n + 1][kg + 1];
+
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            int w = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            goods[i] = new Goods(w, v);
+            weight[i + 1] = Integer.parseInt(st.nextToken());
+            value[i + 1] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(goods);
-        int answer = 0;
-        for (int i = 0; i < n; i++) {
-
-            int w = goods[i].w;
-            int v = goods[i].v;
-
-            for (int j = i + 1; j < n; j++) {
-                if( w > kg) break;
-                if (w + goods[j].w <= kg) {
-                    w += goods[j].w;
-                    v += goods[j].v;
+        for (int w = 1; w <= kg; w++) {
+            for (int i = 1; i <= n; i++) {
+                if (weight[i] > w) {
+                    dp[i][w] = dp[i - 1][w];
+                } else {
+                    dp[i][w] = Math.max(dp[i - 1][w - weight[i]] + value[i], dp[i - 1][w]);
                 }
             }
-            answer = Math.max(answer, v);
-        }
-        System.out.println(answer);
-    }
-
-    static class Goods implements Comparable<Goods>{
-        int w;
-        int v;
-
-        public Goods(int w, int v) {
-            this.w = w;
-            this.v = v;
         }
 
-        @Override
-        public int compareTo(Goods o) {
-            return (v - o.v) * -1;
-        }
+        System.out.println(dp[n][kg]);
 
-        @Override
-        public String toString() {
-            return "Goods{" +
-                    "w=" + w +
-                    ", v=" + v +
-                    '}';
-        }
     }
 }
