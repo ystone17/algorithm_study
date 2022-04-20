@@ -36,9 +36,9 @@ public class Main {
             int b = Integer.parseInt(st.nextToken());
 
             if (cmd == 0) {
-                union(a, b);
+                w_union(a, b);
             } else {
-                if (find(a) == find(b)) {
+                if (w_find(a) == w_find(b)) {
                     System.out.println("YES");
                 } else {
                     System.out.println("NO");
@@ -85,7 +85,7 @@ public class Main {
             return a;
         } else {
             // path compression 경로 압축
-            return parent[a] = find(parent[a]);
+            return parent[a] = w_find(parent[a]);
         }
     }
 
