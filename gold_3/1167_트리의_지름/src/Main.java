@@ -33,7 +33,12 @@ public class Main {
 //        System.out.println(dist[res]);
 
         select = new int[v + 1];
-
+        select[1] = 1;
+        dfs(1, 0);
+        select = new int[v + 1];
+        select[maxIdx] = 1;
+        dfs(maxIdx, 0);
+        System.out.println(max);
     }
 
     static int dijkstra(int k){
