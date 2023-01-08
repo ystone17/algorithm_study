@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
 
@@ -10,8 +10,7 @@ public class Main {
     static StringTokenizer st;
 
     static int n, taeSu, p;
-    static List<Integer> score = new ArrayList<>();
-    static int[] rank;
+    static int[] score, rank;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -24,40 +23,33 @@ public class Main {
             return;
         }
 
+        score = new int[p];
+        rank = new int[p];
+
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            score.add(Integer.parseInt(st.nextToken()));
-        }
-        score.sort(Collections.reverseOrder());
-
-        rank = new int[n];
-        rank[0] = 1;
-        for (int i = 1; i < n; i++) {
-            if (Objects.equals(score.get(i - 1), score.get(i))) {
-                rank[i] = rank[i - 1];
-            } else {
-                rank[i] = i + 1;
-            }
+            score[i] = Integer.parseInt(st.nextToken());
         }
 
-        int idx = p;
+        int idx = n;
         for (int i = 0; i < n; i++) {
-            if (score.get(i) < taeSu) {
+            if (score[i] < taeSu) {
                 idx = i;
+                break;
             }
         }
 
-        if (idx > p) {
+        if (idx >= p) {
             System.out.println(-1);
             return;
         }
 
-        if (idx > n - 1) {
-            System.out.println(idx);
-            return;
+        score[idx] = taeSu;
+        rank[0] = 1;
+        for (int i = 1; i <= idx; i++) {
+            rank[i] = score[i] == score[i - 1] ? rank[i - 1] : i + 1;
         }
 
-        System.out.println(rank[p]);
-
+        System.out.println(rank[idx]);
     }
 }
