@@ -23,6 +23,7 @@ public class Main {
 
         if (isPrime(n)) {
             System.out.println(n - 1);
+            return;
         }
 
         getPrimes();
