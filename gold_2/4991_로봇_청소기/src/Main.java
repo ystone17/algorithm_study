@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -26,26 +27,26 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             xSize = Integer.parseInt(st.nextToken());
             ySize = Integer.parseInt(st.nextToken());
+            dirtyNum = 0;
 
             if (ySize == 0) break;
 
             q = new LinkedList<>();
             map = new char[ySize][xSize];
 
-
             for (int y = 0; y < ySize; y++) {
                 char[] row = br.readLine().toCharArray();
 
                 for (int x = 0; x < xSize; x++) {
                     map[y][x] = row[x];
+
                     if (map[y][x] == 'o') start = new Pos(y, x, 0);
                     if (map[y][x] == '*') {
-                        map[y][x] = (char) ('a' + dirtyNum);
+                        map[y][x] = (char) ('0' + dirtyNum);
                         dirtyNum++;
                     }
                 }
             }
-
             visited = new boolean[1 << dirtyNum][ySize][xSize];
 
             visited[0][start.y][start.x] = true;
@@ -64,11 +65,11 @@ public class Main {
             for (int s = 0; s < size; s++) {
                 Pos cur = q.poll();
 
-                if (map[cur.y][cur.x] != 'x') {
-                    cur.bit += 1 << (map[cur.y][cur.x] - 'a');
+                if ('0' <= map[cur.y][cur.x] && map[cur.y][cur.x] <= '9') {
+                    cur.bit = cur.bit | 1 << (map[cur.y][cur.x] - '0');
                 }
 
-                if (cur.bit == (1 << dirtyNum) -1) {
+                if (cur.bit == (1 << dirtyNum) - 1) {
                     return move;
                 }
 
