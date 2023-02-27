@@ -26,21 +26,21 @@ public class Main {
         System.out.println(sb);
     }
 
-    private static int lcm(int a, int b) {
-        int gcd = gcd(a, b);
+    private static long lcm(long a, long b) {
+        long gcd = gcd(a, b);
 
         return a * b / gcd;
     }
 
-    private static int gcd(int a, int b) {
+    private static long gcd(long a, long b) {
         if (a < b) {
-            int temp = a;
+            long temp = a;
             a = b;
             b = temp;
         }
 
         while (b != 0) {
-            int temp = b;
+            long temp = b;
             b = a % b;
             a = temp;
         }
