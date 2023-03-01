@@ -14,38 +14,33 @@ public class Main {
 
     static int n;
     static long sum, c;
-    static int[] weight;
-    static List<Long> left = new ArrayList<>();
-    static List<Long> right = new ArrayList<>();
-    static int[] used;
+
+    static List<Integer> leftWeight = new ArrayList<>();
+    static List<Integer> rightWeight = new ArrayList<>();
+    static List<Long> leftPartSum = new ArrayList<>();
+    static List<Long> rightPartSum = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         c = Integer.parseInt(st.nextToken());
 
-        weight = new int[n];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            weight[i] = Integer.parseInt(st.nextToken());
+            if (i < n / 2) {
+                leftWeight.add(Integer.parseInt(st.nextToken()));
+            } else {
+                rightWeight.add(Integer.parseInt(st.nextToken()));
+            }
         }
 
-        used = new int[n];
-        for (int i = 0; i < n / 2; i++) {
-            partSum(0, 0, 0, i + 1, left);
-            partSum(n / 2, n / 2, 0, i + 1, right);
-        }
+        partSum(0, 0, leftWeight, leftPartSum);
+        partSum(0, 0, rightWeight, rightPartSum);
 
-        left.add(0L);
-        right.add(0L);
+        Collections.sort(leftPartSum);
+        Collections.sort(rightPartSum);
 
-        Collections.sort(left);
-        Collections.sort(right);
-
-        System.out.println(left);
-        System.out.println(right);
-
-        for (Long r : right) {
+        for (Long r : rightPartSum) {
             if (r > c) break;
             int sum = upperBound(c - r);
             Main.sum += sum;
@@ -54,35 +49,27 @@ public class Main {
         System.out.println(sum);
     }
 
-    static void partSum(int arrStart, int start, int cnt, int size, List<Long> list) {
-        if (cnt >= size) {
-            long sum = 0;
-            for (int i = 0; i < used.length; i++) {
-                if (used[i] == 1) {
-                    sum += weight[i];
-                }
+    static void partSum(int idx, long sum, List<Integer> weight, List<Long> partSum) {
+        if (idx >= weight.size()) {
+            if (sum <= c) {
+                partSum.add(sum);
             }
-            if (sum <= c) list.add(sum);
             return;
         }
 
-        for (int i = start; i < arrStart + n / 2; i++) {
-            if (used[i] == 1) continue;
-            used[i] = 1;
-            partSum(arrStart, i + 1, cnt + 1, size, list);
-            used[i] = 0;
-        }
+        partSum(idx + 1, sum + weight.get(idx), weight, partSum);
+        partSum(idx + 1, sum, weight, partSum);
     }
 
     static int upperBound(Long x) {
         int l = 0;
-        int r = left.size();
+        int r = leftPartSum.size();
         int mid;
 
         while (l < r) {
             mid = (l + r) / 2;
 
-            if (left.get(mid) <= x) {
+            if (leftPartSum.get(mid) <= x) {
                 l = mid + 1;
             } else {
                 r = mid;
