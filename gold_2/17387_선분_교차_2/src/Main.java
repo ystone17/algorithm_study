@@ -20,11 +20,36 @@ public class Main {
         c = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         d = new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
 
-        int first = ccw(a, b, c) * ccw(a, b, d);
-        int second = ccw(c, d, a) * ccw(c, d, b);
+        int abc = ccw(a, b, c);
+        int abd = ccw(a, b, d);
+        int first = abc * abd;
+
+        int cda = ccw(c, d, a);
+        int cdb = ccw(c, d, b);
+        int second = cda * cdb;
 
         if (first == 0 && second == 0) {
-            if (c.x <= b.x && a.x <= d.x && c.y <= b.y && a.y <= d.y || c.x <= b.x && a.x <= c.x && c.y <= b.y && a.y <= c.y) {
+            long ax = a.x;
+            long bx = b.x;
+            if (ax > bx) {
+                long temp = ax;
+                ax = bx;
+                bx = temp;
+            }
+            long cx = c.x;
+            long dx = d.x;
+
+            long ay = a.y;
+            long by = b.y;
+            if (ay > by) {
+                long temp = ay;
+                ay = by;
+                by = temp;
+            }
+            long cy = c.y;
+            long dy = d.y;
+
+            if (ax <= cx && cx <= bx && ay <= cy && cy <= by || ax <= dx && dx <= bx && ay <= dy && dy <= by) {
                 System.out.println(1);
             } else {
                 System.out.println(0);
@@ -33,24 +58,90 @@ public class Main {
         }
 
         if (first == 0) {
-            if (a.x <= c.x && c.x <= b.x && a.y <= c.y && c.y <= b.y || a.x <= d.x && d.x <= b.x && a.y <= d.y && d.y <= b.y) {
-                System.out.println(1);
-            } else {
-                System.out.println(0);
+            long ax = a.x;
+            long bx = b.x;
+            if (ax > bx) {
+                long temp = ax;
+                ax = bx;
+                bx = temp;
             }
+            long cx = c.x;
+            long dx = d.x;
+
+            long ay = a.y;
+            long by = b.y;
+            if (ay > by) {
+                long temp = ay;
+                ay = by;
+                by = temp;
+            }
+            long cy = c.y;
+            long dy = d.y;
+
+            if (abc == 0) {
+                if (ax <= cx && cx <= bx && ay <= cy && cy <= by) {
+                    System.out.println(1);
+                } else {
+                    System.out.println(0);
+                }
+                return;
+            }
+
+            if (abd == 0) {
+                if (ax <= dx && dx <= bx && ay <= dy && dy <= by) {
+                    System.out.println(1);
+                } else {
+                    System.out.println(0);
+                }
+                return;
+            }
+
             return;
         }
 
         if (second == 0) {
-            if (c.x <= a.x && a.x <= d.x && c.y <= a.y && a.y <= d.y || c.x <= b.x && b.x <= d.x && c.y <= b.y && b.y <= d.y) {
-                System.out.println(1);
-            } else {
-                System.out.println(0);
+            long cx = c.x;
+            long dx = d.x;
+            if (cx > dx) {
+                long temp = cx;
+                cx = dx;
+                dx = temp;
             }
+            long ax = a.x;
+            long bx = b.x;
+
+            long cy = c.y;
+            long dy = d.y;
+            if (cy > dy) {
+                long temp = cy;
+                cy = dy;
+                dy = temp;
+            }
+            long ay = a.y;
+            long by = b.y;
+
+            if (cda == 0) {
+                if (cx <= ax && ax <= dx && cy <= ay && ay <= dy) {
+                    System.out.println(1);
+                } else {
+                    System.out.println(0);
+                }
+                return;
+            }
+
+            if (cdb == 0) {
+                if (cx <= bx && bx <= dx && cy <= by && by <= dy) {
+                    System.out.println(1);
+                } else {
+                    System.out.println(0);
+                }
+                return;
+            }
+
             return;
         }
 
-        System.out.println(first * second > 0 ? 1 : 0);
+        System.out.println(first < 0 && second < 0 ? 1 : 0);
     }
 
     private static int ccw(Pos a, Pos b, Pos c) {
