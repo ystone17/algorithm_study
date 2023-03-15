@@ -28,28 +28,22 @@ public class Main {
         int cdb = ccw(c, d, b);
         int second = cda * cdb;
 
+        if (first * second == 1) {
+            if (first == 1) {
+                System.out.println(0);
+            } else {
+                System.out.println(1);
+            }
+            return;
+        }
+
+        if (first * second == -1) {
+            System.out.println(0);
+            return;
+        }
+
         if (first == 0 && second == 0) {
-            long ax = a.x;
-            long bx = b.x;
-            if (ax > bx) {
-                long temp = ax;
-                ax = bx;
-                bx = temp;
-            }
-            long cx = c.x;
-            long dx = d.x;
-
-            long ay = a.y;
-            long by = b.y;
-            if (ay > by) {
-                long temp = ay;
-                ay = by;
-                by = temp;
-            }
-            long cy = c.y;
-            long dy = d.y;
-
-            if (ax <= cx && cx <= bx && ay <= cy && cy <= by || ax <= dx && dx <= bx && ay <= dy && dy <= by) {
+            if (onLine(a, b, c) || onLine(a, b, d) || onLine(c, d, a) || onLine(c, d, b)) {
                 System.out.println(1);
             } else {
                 System.out.println(0);
@@ -58,90 +52,59 @@ public class Main {
         }
 
         if (first == 0) {
-            long ax = a.x;
-            long bx = b.x;
-            if (ax > bx) {
-                long temp = ax;
-                ax = bx;
-                bx = temp;
-            }
-            long cx = c.x;
-            long dx = d.x;
-
-            long ay = a.y;
-            long by = b.y;
-            if (ay > by) {
-                long temp = ay;
-                ay = by;
-                by = temp;
-            }
-            long cy = c.y;
-            long dy = d.y;
-
             if (abc == 0) {
-                if (ax <= cx && cx <= bx && ay <= cy && cy <= by) {
+                // ab 직선 위에 c가 있어야 함
+                if (onLine(a, b, c)) {
                     System.out.println(1);
                 } else {
                     System.out.println(0);
                 }
-                return;
-            }
-
-            if (abd == 0) {
-                if (ax <= dx && dx <= bx && ay <= dy && dy <= by) {
+            } else {
+                // ab 직선 위에 d가 있어야 함
+                if (onLine(a, b, d)) {
                     System.out.println(1);
                 } else {
                     System.out.println(0);
                 }
-                return;
             }
-
             return;
         }
 
         if (second == 0) {
-            long cx = c.x;
-            long dx = d.x;
-            if (cx > dx) {
-                long temp = cx;
-                cx = dx;
-                dx = temp;
-            }
-            long ax = a.x;
-            long bx = b.x;
-
-            long cy = c.y;
-            long dy = d.y;
-            if (cy > dy) {
-                long temp = cy;
-                cy = dy;
-                dy = temp;
-            }
-            long ay = a.y;
-            long by = b.y;
-
             if (cda == 0) {
-                if (cx <= ax && ax <= dx && cy <= ay && ay <= dy) {
+                // cd 직선 위에 a가 있어야 함
+                if (onLine(c, d, a)) {
                     System.out.println(1);
                 } else {
                     System.out.println(0);
                 }
-                return;
-            }
-
-            if (cdb == 0) {
-                if (cx <= bx && bx <= dx && cy <= by && by <= dy) {
+            } else {
+                // cd 직선 위에 b가 있어야 함
+                if (onLine(c, d, b)) {
                     System.out.println(1);
                 } else {
                     System.out.println(0);
                 }
-                return;
             }
 
             return;
         }
 
-        System.out.println(first < 0 && second < 0 ? 1 : 0);
+
+        System.out.println(0);
+    }
+
+    private static boolean onLine(Pos a, Pos b, Pos c) {
+        long dy = b.y - a.y;
+        long dx = b.x - a.x;
+        long dyy = b.y - c.y;
+        long dxx = b.x - c.x;
+
+        if (dy * dxx != dx * dyy) {
+            return false;
+        }
+
+        return Math.min(a.y, b.y) <= c.y && c.y <= Math.max(a.y, b.y) && Math.min(a.x, b.x) <= c.x && c.x <= Math.max(a.x, b.x);
     }
 
     private static int ccw(Pos a, Pos b, Pos c) {
