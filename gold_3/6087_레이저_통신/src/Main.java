@@ -10,17 +10,19 @@ public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer st;
+
     static int[] dy = {0, 1, 0, -1};
     static int[] dx = {1, 0, -1, 0};
+
     static char[][] map;
     static int[][] visited;
-    static int x, y;
     static int[][] cPos = new int[2][2];
+
+    static int x, y;
 
     public static void main(String[] args) throws IOException {
         read();
-        bfs();
-        System.out.println(visited[cPos[1][0]][cPos[1][1]]);
+        System.out.println(bfs());
     }
 
     private static void read() throws IOException {
@@ -32,6 +34,7 @@ public class Main {
         for (int[] ints : visited) {
             Arrays.fill(ints, Integer.MAX_VALUE);
         }
+
         map = new char[y][x];
         int idx = 0;
         for (int i = 0; i < y; i++) {
@@ -47,24 +50,26 @@ public class Main {
         }
     }
 
-    private static void bfs() {
+    private static int bfs() {
+        int min = Integer.MAX_VALUE;
         Queue<Pos> q = new LinkedList<>();
 
         q.add(new Pos(cPos[0][0], cPos[0][1], -1, -1));
-        visited[cPos[0][0]][cPos[0][1]] = 0;
+        visited[cPos[0][0]][cPos[0][1]] = -1;
 
         while (!q.isEmpty()) {
             Pos cur = q.poll();
 
+            if (cur.cnt > min) continue;
             if (cur.y == cPos[1][0] && cur.x == cPos[1][1]) {
+                min = cur.cnt;
                 continue;
             }
 
             for (int i = 0; i < 4; i++) {
                 int ny = cur.y + dy[i];
                 int nx = cur.x + dx[i];
-                int nCnt = cur.cnt;
-                if (cur.dir != i) nCnt++;
+                int nCnt = cur.dir != i ? cur.cnt + 1 : cur.cnt;
 
                 if (ny < 0 || ny >= y || nx < 0 || nx >= x) continue;
                 if (visited[ny][nx] < nCnt) continue;
@@ -73,8 +78,9 @@ public class Main {
                 visited[ny][nx] = nCnt;
                 q.add(new Pos(ny, nx, i, nCnt));
             }
-
         }
+
+        return min;
     }
 
     static class Pos {
