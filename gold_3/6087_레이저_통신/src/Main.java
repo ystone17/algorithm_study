@@ -15,7 +15,7 @@ public class Main {
     static int[] dx = {1, 0, -1, 0};
 
     static char[][] map;
-    static int[][] visited;
+    static int[][][] visited;
     static int[][] cPos = new int[2][2];
 
     static int x, y;
@@ -30,9 +30,11 @@ public class Main {
         x = Integer.parseInt(st.nextToken());
         y = Integer.parseInt(st.nextToken());
 
-        visited = new int[y][x];
-        for (int[] ints : visited) {
-            Arrays.fill(ints, Integer.MAX_VALUE);
+        visited = new int[y][x][4];
+        for (int[][] ints : visited) {
+            for (int[] anInt : ints) {
+                Arrays.fill(anInt, Integer.MAX_VALUE);
+            }
         }
 
         map = new char[y][x];
@@ -55,7 +57,9 @@ public class Main {
         Queue<Pos> q = new LinkedList<>();
 
         q.add(new Pos(cPos[0][0], cPos[0][1], -1, -1));
-        visited[cPos[0][0]][cPos[0][1]] = -1;
+        for (int i = 0; i < 4; i++) {
+            visited[cPos[0][0]][cPos[0][1]][i] = -1;
+        }
 
         while (!q.isEmpty()) {
             Pos cur = q.poll();
@@ -72,10 +76,10 @@ public class Main {
                 int nCnt = cur.dir != i ? cur.cnt + 1 : cur.cnt;
 
                 if (ny < 0 || ny >= y || nx < 0 || nx >= x) continue;
-                if (visited[ny][nx] < nCnt) continue;
+                if (visited[ny][nx][i] <= nCnt) continue;
                 if (map[ny][nx] == '*') continue;
 
-                visited[ny][nx] = nCnt;
+                visited[ny][nx][i] = nCnt;
                 q.add(new Pos(ny, nx, i, nCnt));
             }
         }
