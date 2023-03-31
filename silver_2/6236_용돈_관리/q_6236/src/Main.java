@@ -23,12 +23,12 @@ public class Main {
             cost[i] = Integer.parseInt(br.readLine());
         }
 
-        int left = 0;
+        long left = 0;
         for (int i : cost) {
             left = Math.max(left, i);
         }
-        int right = Integer.MAX_VALUE;
-        int mid;
+        long right = 1_987_654_321;
+        long mid;
 
         while (left < right){
             mid = (left  + right) / 2;
@@ -45,9 +45,9 @@ public class Main {
 
     }
 
-    private static boolean ok(int k) {
+    private static boolean ok(long k) {
         int mCnt = 0;
-        int wallet = 0;
+        long wallet = 0;
         for (int i = 0; i < n; i++) {
             if (wallet < cost[i]) {
                 wallet = k;
