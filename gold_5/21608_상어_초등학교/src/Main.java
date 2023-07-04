@@ -11,7 +11,8 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static int n, ny, nx, result;
+    static int n, ny, nx;
+    static long result;
     static int[] fanSeq;
     static int[][] map;
     static Block[][] blockMap;
@@ -21,11 +22,6 @@ public class Main {
     static int[] dx = {1, 0, -1, 0};
 
     public static void main(String[] args) throws IOException {
-//        for (int i = 17; i < 401; i++) {
-//            System.out.printf("%d 1 2 3 4\n", i);
-//        }
-
-
         read();
         play();
 
@@ -35,13 +31,27 @@ public class Main {
             }
         }
 
-        System.out.println(result);
+        System.out.print(result);
     }
 
     private static void play() {
         for (int fan : fanSeq) {
-            ny = n - 1;
-            nx = n - 1;
+            ny = -1;
+            nx = -1;
+            for (int y = n - 1; y >= 0; y--) {
+                for (int x = n - 1; x >= 0; x--) {
+                    if (map[y][x] != 0) {
+                        continue;
+                    }
+                    ny = y;
+                    nx = x;
+                    break;
+                }
+                if (ny != -1) {
+                    break;
+                }
+            }
+
             for (int y = n - 1; y >= 0; y--) {
                 for (int x = n - 1; x >= 0; x--) {
                     if (map[y][x] != 0) {
@@ -63,7 +73,7 @@ public class Main {
                 int mx = nx + dx[i];
 
                 if (my < 0 || my >= n || mx < 0 || mx >= n) continue;
-                blockMap[my][mx].add(fan);
+                blockMap[my][mx].sign(fan);
             }
         }
     }
@@ -112,25 +122,25 @@ public class Main {
     }
 
     static class Block {
-        int[] count;
+        int[] starCount;
         int emptyCnt;
 
 
         public Block(int emptyCnt) {
             this.emptyCnt = emptyCnt;
-            this.count = new int[n * n + 1];
+            this.starCount = new int[n * n + 1];
         }
 
-        void add(int star) {
+        void sign(int star) {
             for (Integer fan : fanListOfStar.get(star)) {
-                count[fan]++;
+                starCount[fan]++;
             }
             emptyCnt--;
         }
 
         int compare(Block block, int fan) {
-            if (this.count[fan] != block.count[fan]) {
-                return Integer.compare(this.count[fan], block.count[fan]);
+            if (this.starCount[fan] != block.starCount[fan]) {
+                return Integer.compare(this.starCount[fan], block.starCount[fan]);
             }
 
             if (this.emptyCnt != block.emptyCnt) {
@@ -141,10 +151,11 @@ public class Main {
         }
 
         int happy(int fan) {
-            if (this.count[fan] == 0) {
+            if (this.starCount[fan] == 0) {
                 return 0;
             }
-            return (int) Math.pow(10, this.count[fan] - 1);
+            int pow = (int) Math.pow(10, this.starCount[fan] - 1);
+            return pow;
         }
     }
 }
