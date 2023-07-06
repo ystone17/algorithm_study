@@ -29,18 +29,21 @@ public class Main {
 
     private static boolean check(char[] sign) {
         for (int i = sign.length - 1; i >= 0; ) {
+            if (sign[i] == '0') {
+                return false;
+            }
             boolean typeZeroOne = isTypeZeroOne(sign, i);
             if (typeZeroOne) {
                 i -= 2;
                 continue;
             }
 
-            int idx = isTypeMulti(sign, i);
-            if (idx == -1) {
+            int size = isTypeMulti(sign, i);
+            if (size == -1) {
                 return false;
             }
 
-            i = idx;
+            i -= size;
         }
 
         return true;
@@ -69,7 +72,7 @@ public class Main {
             return -1;
         }
 
-        return idx - 1;
+        return endIdx - idx + 1;
     }
 
     private static boolean isTypeZeroOne(char[] sign, int endIdx) {
@@ -79,6 +82,10 @@ public class Main {
 
         if (sign[endIdx - 1] != '0' || sign[endIdx] != '1') {
             return false;
+        }
+
+        if (endIdx - 2 < 0) {
+            return true;
         }
 
         return sign[endIdx - 2] != '0';
