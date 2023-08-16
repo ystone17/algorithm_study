@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -25,6 +26,9 @@ public class Main {
         }
 
         dp = new int[n + 1][m + 1];
+        for (int[] row : dp) {
+            Arrays.fill(row, -123456789);
+        }
 
         for (int nIdx = 1; nIdx <= n; nIdx++) {
             for (int mIdx = 1; mIdx <= m; mIdx++) {
@@ -35,13 +39,13 @@ public class Main {
                 dp[nIdx][mIdx] = dp[nIdx - 1][mIdx];
 
                 for (int kIdx = 1; kIdx <= nIdx; kIdx++) {
-                    if (kIdx >= 2) {
-                        dp[nIdx][mIdx] = Math.max(dp[nIdx][mIdx], dp[kIdx - 2][mIdx - 1] + partSum[nIdx] - partSum[kIdx - 1]);
+                    if (mIdx == 1) {
+                        dp[nIdx][mIdx] = Math.max(dp[nIdx][mIdx], partSum[nIdx] - partSum[kIdx - 1]);
                         continue;
                     }
 
-                    if(kIdx == 1 && mIdx == 1) {
-                        dp[nIdx][mIdx] = Math.max(dp[nIdx][mIdx], partSum[nIdx]);
+                    if (kIdx > 2) {
+                        dp[nIdx][mIdx] = Math.max(dp[nIdx][mIdx], dp[kIdx - 2][mIdx - 1] + partSum[nIdx] - partSum[kIdx - 1]);
                     }
                 }
             }
