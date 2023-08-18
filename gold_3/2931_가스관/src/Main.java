@@ -35,7 +35,7 @@ public class Main {
                 if (blocks[y][x].signature != 'M' && blocks[y][x].signature != 'Z') {
                     continue;
                 }
-                boolean isOpen = true;
+                boolean isOpen = false;
                 for (int dir = 0; dir < 4; dir++) {
                     int ny = y + dy[dir];
                     int nx = x + dx[dir];
@@ -45,11 +45,11 @@ public class Main {
                     }
 
                     if (blocks[ny][nx].isOpen(dir)) {
-                        isOpen = false;
+                        isOpen = true;
                     }
                 }
-                if(isOpen) {
-                    blocks[y][x].signature = '+';
+                if (isOpen) {
+                    blocks[y][x].close();
                 }
             }
         }
@@ -69,22 +69,13 @@ public class Main {
                     }
 
                     if (blocks[ny][nx].isOpen(dir)) {
-                        if (blocks[ny][nx].signature == 'M' || blocks[ny][nx].signature == 'Z') {
-                            dirs[dir] = 1;
-                        } else {
-                            dirs[dir] = 2;
-                        }
+                        dirs[dir] = 1;
                         cnt++;
                     }
                 }
 
-                if (cnt == 3) {
-                    System.out.printf("%d %d %c", y + 1, x + 1, getSignature(2));
-                    return;
-                }
-
                 if (cnt >= 2) {
-                    System.out.printf("%d %d %c", y + 1, x + 1, getSignature(1));
+                    System.out.printf("%d %d %c", y + 1, x + 1, getSignature());
                     return;
                 }
             }
@@ -92,32 +83,32 @@ public class Main {
 
     }
 
-    static char getSignature(int base) {
-        if (dirs[0] >= base && dirs[1] >= base && dirs[2] >= base && dirs[3] >= base) {
+    static char getSignature() {
+        if (dirs[0] == 1 && dirs[1] == 1 && dirs[2] == 1 && dirs[3] == 1) {
             return '+';
         }
 
-        if (dirs[1] >= base && dirs[3] >= base) {
+        if (dirs[1] == 1 && dirs[3] == 1) {
             return '|';
         }
 
-        if (dirs[0] >= base && dirs[2] >= base) {
+        if (dirs[0] == 1 && dirs[2] == 1) {
             return '-';
         }
 
-        if (dirs[0] >= base && dirs[1] >= base) {
+        if (dirs[0] == 1 && dirs[1] == 1) {
             return '1';
         }
 
-        if (dirs[0] >= base && dirs[3] >= base) {
+        if (dirs[0] == 1 && dirs[3] == 1) {
             return '2';
         }
 
-        if (dirs[2] >= base && dirs[3] >= base) {
+        if (dirs[2] == 1 && dirs[3] == 1) {
             return '3';
         }
 
-        if (dirs[1] >= base && dirs[2] >= base) {
+        if (dirs[1] == 1 && dirs[2] == 1) {
             return '4';
         }
 
@@ -200,5 +191,13 @@ public class Main {
             }
             return false;
         }
+
+        public void close() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
     }
 }
