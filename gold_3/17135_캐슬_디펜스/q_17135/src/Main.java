@@ -61,13 +61,12 @@ public class Main {
         int attackRemoveCount = 0;
         while (moveRemoveCount + attackRemoveCount != enemyCount) {
             for (int i = 0; i < map[lenY].length; i++) {
-                if(map[lenY][i] == 1) {
-                    attackEnemy(i);
-                    attackRemoveCount += removeAttackedEnemy();
+                if (map[lenY][i] == 1) {
+                    attackEnemy(i, map);
                 }
             }
-
-            moveRemoveCount += moveEnemy();
+            attackRemoveCount += removeAttackedEnemy(map);
+            moveRemoveCount += moveEnemy(map);
         }
 
         return attackRemoveCount;
@@ -86,25 +85,42 @@ public class Main {
     }
 
 
-    static boolean attackEnemy(int archerX) {
+    static void attackEnemy(int archerX, int[][] map) {
+        int ry = lenY;
+        int rx = lenX;
+        int dist = d;
 
-        for (int y = lenY - 1; y >= 0; y--) {
-            for (int x = lenX - 1; lenY - y + lenX - x <= d; x--) {
-                if (map[y][x] >= 1) {
-                    map[y][x]++;
-                    return true;
+        for (int y = 0; y < lenY; y++) {
+            for (int x = 0; x < lenX; x++) {
+                if (map[y][x] == 0) {
+                    continue;
                 }
+
+                int curDist = lenY - y + Math.abs(archerX - x);
+                if (dist > curDist) {
+                    ry = y;
+                    rx = x;
+                    dist = curDist;
+                }
+
+                if (dist == curDist && rx > x) {
+                    ry = y;
+                    rx = x;
+                }
+
             }
         }
 
-        return false;
+        if (ry != lenY) {
+            map[ry][rx]++;
+        }
     }
 
-    static int removeAttackedEnemy() {
+    static int removeAttackedEnemy(int[][] map) {
         int removeEnemyCount = 0;
         for (int y = 0; y < lenY; y++) {
             for (int x = 0; x < lenX; x++) {
-                if (map[y][x] >= 1) {
+                if (map[y][x] >= 2) {
                     map[y][x] = 0;
                     removeEnemyCount++;
                 }
@@ -114,11 +130,15 @@ public class Main {
         return removeEnemyCount;
     }
 
-    static int moveEnemy() {
+    static int moveEnemy(int[][] map) {
         int removeEnemyCount = 0;
 
         for (int y = lenY - 1; y >= 0; y--) {
             for (int x = lenX - 1; x >= 0; x--) {
+                if (map[y][x] == 0) {
+                    continue;
+                }
+
                 if (y == lenY - 1) {
                     map[y][x] = 0;
                     removeEnemyCount++;
