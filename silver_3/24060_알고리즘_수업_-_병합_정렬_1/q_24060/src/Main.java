@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,7 +9,7 @@ public class Main {
     static StringTokenizer st;
 
     static int n, k, kCount = 1, res = -1;
-    static int[] seq;
+    static int[] seq, temp;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -19,6 +18,7 @@ public class Main {
         k = Integer.parseInt(st.nextToken());
 
         seq = new int[n];
+        temp = new int[n];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
@@ -44,8 +44,7 @@ public class Main {
     private static void merge(int start, int middle, int end) {
         int i = start;
         int j = middle + 1;
-        int idx = start;
-        int[] temp = new int[n];
+        int idx = 0;
 
         while (i <= middle && j <= end) {
             if (seq[i] <= seq[j]) {
@@ -76,8 +75,8 @@ public class Main {
             }
         }
 
-        for (int tempIdx = start; tempIdx <= end; tempIdx++) {
-            seq[tempIdx] = temp[tempIdx];
+        for (int tempIdx = 0; tempIdx < idx; tempIdx++) {
+            seq[start + tempIdx] = temp[tempIdx];
         }
     }
 }
