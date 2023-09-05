@@ -7,38 +7,22 @@ public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     static String s;
-
+    static int res = 0;
     static int[] table;
 
     public static void main(String[] args) throws IOException {
         s = br.readLine();
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < 5000; i++) {
-//
-//            char cValue = (char) ((Math.random() * 26) + 97);
-//            sb.append(cValue);
-//        }
-//        s = sb.toString();
-        initTable();
 
-        int length = s.length();
-
-        for (int i = length; i > 0; i--) {
-            for (int j = 0; j < length - i + 1; j++) {
-
-                int count = KMP(j, j + i);
-                if (count >= 2) {
-                    System.out.println(i);
-                    return;
-                }
-            }
+        for (int i = 0; i < s.length(); i++) {
+            res = Math.max(res, initTable(s.substring(i)));
         }
 
-        System.out.println(0);
-
+        System.out.println(res);
     }
 
-    private static void initTable() {
+    private static int initTable(String s) {
+        int max = 0;
+
         int length = s.length();
         table = new int[length];
 
@@ -52,37 +36,10 @@ public class Main {
             if (s.charAt(i) == s.charAt(idx)) {
                 idx++;
                 table[i] = idx;
+                max = Math.max(max, table[i]);
             }
         }
 
-    }
-
-    private static int KMP(int patternStart, int patternEnd) {
-        int count = 0;
-
-        int parentLen = s.length();
-        int patternLen = patternEnd - patternStart;
-
-        int begin = 0;
-        int matchedLen = 0;
-
-        while (begin <= parentLen - patternLen) {
-            if (matchedLen < patternLen && s.charAt(begin + matchedLen) == s.charAt(patternStart + matchedLen)) {
-                matchedLen++;
-
-                if (matchedLen == patternLen) {
-                    count++;
-                }
-            } else {
-                if (matchedLen == 0) {
-                    begin++;
-                } else {
-                    begin += matchedLen - table[matchedLen - 1];
-                    matchedLen = table[matchedLen - 1];
-                }
-            }
-        }
-
-        return count;
+        return max;
     }
 }
