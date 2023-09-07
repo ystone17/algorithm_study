@@ -46,22 +46,25 @@ public class Main {
         }
 
         fluid();
-
         drawDist();
+        drawRoute();
         System.out.println(sb);
+    }
 
-        for (int y = 1; y <= n; y++) {
-            for (int x = 1; x <= n; x++) {
-                if(y==x) {
-                    System.out.println(0);
-                    continue;
+    private static void fluid() {
+        for (int mid = 1; mid <= n; mid++) {
+            for (int y = 1; y <= n; y++) {
+                for (int x = 1; x <= n; x++) {
+                    if (y == x) continue;
+                    if (dist[y][x] > dist[y][mid] + dist[mid][x]) {
+                        dist[y][x] = dist[y][mid] + dist[mid][x];
+
+                        route.get(y).get(x).clear();
+                        route.get(y).get(x).addAll(route.get(y).get(mid));
+                        route.get(y).get(x).add(mid);
+                        route.get(y).get(x).addAll(route.get(mid).get(x));
+                    }
                 }
-                List<Integer> integers = route.get(y).get(x);
-
-                System.out.printf("%d -> %d cnt: %d ", y, x, integers.size() + 2);
-                System.out.printf("%d ", y);
-                System.out.print(integers);
-                System.out.printf(" %d\n", x);
             }
         }
     }
@@ -75,23 +78,20 @@ public class Main {
         }
     }
 
-    static void fluid() {
+    private static void drawRoute() {
         for (int y = 1; y <= n; y++) {
             for (int x = 1; x <= n; x++) {
-                if (y == x) {
+                if (y == x || dist[y][x] == 123_456_789) {
+                    sb.append(0).append("\n");
                     continue;
                 }
-
-                for (int mid = 1; mid <= n; mid++) {
-                    if (mid == y || mid == x) {
-                        continue;
-                    }
-
-                    if (dist[y][x] > dist[y][mid] + dist[mid][x]) {
-                        dist[y][x] = dist[y][mid] + dist[mid][x];
-                        route.get(y).get(x).add(mid);
-                    }
+                List<Integer> r = route.get(y).get(x);
+                sb.append(r.size() + 2).append(" ");
+                sb.append(y).append(" ");
+                for (Integer integer : r) {
+                    sb.append(integer).append(" ");
                 }
+                sb.append(x).append("\n");
             }
         }
     }
