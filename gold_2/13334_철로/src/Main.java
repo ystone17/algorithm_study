@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -14,6 +12,8 @@ public class Main {
 
     static int n, d;
     static List<Pos> posList = new ArrayList<>();
+    static Queue<Pos> q = new LinkedList<>();
+    static int res;
 
     public static void main(String[] args) throws IOException {
         n = Integer.parseInt(br.readLine());
@@ -23,8 +23,36 @@ public class Main {
             posList.add(new Pos(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
+        d = Integer.parseInt(br.readLine());
+
+        posList = posList.stream()
+                .filter(pos -> (pos.right - pos.left) <= d)
+//                .map(pos -> new Pos(Math.max(0, pos.right - d), pos.right))
+                .collect(Collectors.toList());
+
         Collections.sort(posList);
 
+        for (Pos pos : posList) {
+            if (q.isEmpty()) {
+                q.add(pos);
+                res = Math.max(res, q.size());
+                continue;
+            }
+
+            if (pos.right - d <= q.peek().left) {
+                q.add(pos);
+                res = Math.max(res, q.size());
+                continue;
+            }
+
+            while (!q.isEmpty() && pos.right - d > q.peek().left) {
+                q.poll();
+            }
+            q.add(pos);
+            res = Math.max(res, q.size());
+        }
+
+        System.out.println(res);
     }
 
     private static class Pos implements Comparable<Pos> {
@@ -43,11 +71,19 @@ public class Main {
 
         @Override
         public int compareTo(Pos o) {
-            if (this.left != o.left) {
-                return Integer.compare(this.left, o.left);
+            if (this.right != o.right) {
+                return Integer.compare(this.right, o.right);
             }
 
-            return Integer.compare(this.right, o.right);
+            return Integer.compare(this.left, o.left);
+        }
+
+        @Override
+        public String toString() {
+            return "Pos{" +
+                    "left=" + left +
+                    ", right=" + right +
+                    '}';
         }
     }
 }
