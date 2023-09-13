@@ -13,6 +13,12 @@ public class Main {
     static int n, d;
     static List<Pos> posList = new ArrayList<>();
     static Queue<Pos> q = new LinkedList<>();
+    static PriorityQueue<Pos> pq = new PriorityQueue<>(new Comparator<Pos>() {
+        @Override
+        public int compare(Pos o1, Pos o2) {
+            return 0;
+        }
+    });
     static int res;
 
     public static void main(String[] args) throws IOException {
@@ -27,7 +33,6 @@ public class Main {
 
         posList = posList.stream()
                 .filter(pos -> (pos.right - pos.left) <= d)
-//                .map(pos -> new Pos(Math.max(0, pos.right - d), pos.right))
                 .collect(Collectors.toList());
 
         Collections.sort(posList);
@@ -76,14 +81,6 @@ public class Main {
             }
 
             return Integer.compare(this.left, o.left);
-        }
-
-        @Override
-        public String toString() {
-            return "Pos{" +
-                    "left=" + left +
-                    ", right=" + right +
-                    '}';
         }
     }
 }
