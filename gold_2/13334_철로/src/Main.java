@@ -2,23 +2,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
     static int n, d;
     static List<Pos> posList = new ArrayList<>();
-    static Queue<Pos> q = new LinkedList<>();
-    static PriorityQueue<Pos> pq = new PriorityQueue<>(new Comparator<Pos>() {
-        @Override
-        public int compare(Pos o1, Pos o2) {
-            return 0;
-        }
-    });
+    static PriorityQueue<Pos> pq;
     static int res;
 
     public static void main(String[] args) throws IOException {
@@ -31,36 +23,25 @@ public class Main {
 
         d = Integer.parseInt(br.readLine());
 
-        posList = posList.stream()
-                .filter(pos -> (pos.right - pos.left) <= d)
-                .collect(Collectors.toList());
-
-        Collections.sort(posList);
-
+        pq = new PriorityQueue<>(Comparator.comparingInt(o -> o.left));
+        posList.sort(Comparator.comparingInt(o -> o.right));
         for (Pos pos : posList) {
-            if (q.isEmpty()) {
-                q.add(pos);
-                res = Math.max(res, q.size());
+            if (pos.right - pos.left > d) {
                 continue;
             }
 
-            if (pos.right - d <= q.peek().left) {
-                q.add(pos);
-                res = Math.max(res, q.size());
-                continue;
+            while (!pq.isEmpty() && pos.right - d > pq.peek().left) {
+                pq.poll();
             }
 
-            while (!q.isEmpty() && pos.right - d > q.peek().left) {
-                q.poll();
-            }
-            q.add(pos);
-            res = Math.max(res, q.size());
+            pq.add(pos);
+            res = Math.max(res, pq.size());
         }
 
         System.out.println(res);
     }
 
-    private static class Pos implements Comparable<Pos> {
+    private static class Pos {
         int left;
         int right;
 
@@ -72,15 +53,6 @@ public class Main {
                 this.left = b;
                 this.right = a;
             }
-        }
-
-        @Override
-        public int compareTo(Pos o) {
-            if (this.right != o.right) {
-                return Integer.compare(this.right, o.right);
-            }
-
-            return Integer.compare(this.left, o.left);
         }
     }
 }
