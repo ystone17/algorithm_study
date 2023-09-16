@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -11,66 +12,100 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static int len, sharkNum, k;
-    static int[][] smell, map;
+    static int len, sharkNum, k, curSharkNum;
+    static int[][] map, smellTime, smellShark;
     static List<Shark> sharks = new ArrayList<>();
 
     static int[] dy = {-1, 0, 1, 0};
     static int[] dx = {0, 1, 0, -1};
 
-    // 1, 2, 3, 4는 각각 위, 아래, 왼쪽, 오른쪽을 의미한다.
-    // 0, 2, 3, 1는 각각 위, 아래, 왼쪽, 오른쪽을 의미한다.
     public static void main(String[] args) throws IOException {
         read();
 
-
-        for (int time = 1; time <= 1000; time++) {
-            move(time);
-//            if (isFinish()) {
-//                System.out.println(time);
-//                return;
-//            }
-        }
-
-        System.out.println(-1);
+        System.out.println(move());
     }
 
-    private static void move(int time) {
-        for (int num = sharkNum; num > 0; num--) {
-            Shark shark = sharks.get(sharkNum);
-            smell[shark.y][shark.x] = time;
-
-            int rank = -1;
-            for (int dir = 0; dir < 4; dir++) {
-                int ny = shark.y + dy[dir];
-                int nx = shark.y + dy[dir];
-
-                if (ny < 0 || ny >= len || nx < 0 || nx >= len) {
+    private static int move() {
+        for (int time = 1; time <= 1000; time++) {
+            for (int num = 1; num <= sharkNum; num++) {
+                Shark shark = sharks.get(num);
+                if (shark == null) {
                     continue;
                 }
 
-                if(map[ny][nx] == 0) {
-                    rank = 3;
-                } else if(map[ny][nx] == 0) {
+                boolean empty = false;
 
+                int fy = -1;
+                int fx = -1;
+                int fDir = -1;
+
+                for (int i = shark.nextDir[shark.dir].length - 1; i >= 0; i--) {
+                    int dir = shark.nextDir[shark.dir][i];
+                    int ny = shark.y + dy[dir];
+                    int nx = shark.x + dx[dir];
+
+                    if (ny < 0 || ny >= len || nx < 0 || nx >= len) {
+                        continue;
+                    }
+
+                    if (smellTime[ny][nx] < time - k) {
+                        fy = ny;
+                        fx = nx;
+                        fDir = dir;
+                        empty = true;
+                        continue;
+                    }
+
+                    if (!empty && smellShark[ny][nx] == num) {
+                        fy = ny;
+                        fx = nx;
+                        fDir = dir;
+                    }
                 }
+
+                smellTime[fy][fx] = time;
+                smellShark[fy][fx] = num;
+
+                shark.dir = fDir;
+                shark.y = fy;
+                shark.x = fx;
+
+                if (map[fy][fx] != 0 && map[fy][fx] != num) {
+                    sharks.set(map[fy][fx], null);
+                    curSharkNum--;
+                }
+
+                map[fy][fx] = num;
+                map[shark.y][shark.x] = 0;
             }
+
+            if (curSharkNum == 1) {
+                return time;
+            }
+
         }
 
 
+        return -1;
     }
+
 
     private static void read() throws IOException {
         st = new StringTokenizer(br.readLine());
 
         len = Integer.parseInt(st.nextToken());
         sharkNum = Integer.parseInt(st.nextToken());
+        curSharkNum = sharkNum;
         k = Integer.parseInt(st.nextToken());
 
-        smell = new int[len][len];
+        smellTime = new int[len][len];
+        smellShark = new int[len][len];
         map = new int[len][len];
         for (int i = 0; i <= sharkNum; i++) {
             sharks.add(null);
+        }
+        for (int y = 0; y < len; y++) {
+            Arrays.fill(smellTime[y], -123465);
         }
 
         for (int y = 0; y < len; y++) {
@@ -79,6 +114,8 @@ public class Main {
                 map[y][x] = Integer.parseInt(st.nextToken());
                 if (map[y][x] != 0) {
                     sharks.set(map[y][x], new Shark(y, x));
+                    smellTime[y][x] = 0;
+                    smellShark[y][x] = map[y][x];
                 }
             }
         }
