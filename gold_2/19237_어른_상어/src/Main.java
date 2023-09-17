@@ -27,13 +27,13 @@ public class Main {
 
     private static int move() {
         for (int time = 1; time <= 1000; time++) {
-            for (int num = 1; num <= sharkNum; num++) {
+            for (int num = sharkNum; num > 0; num--) {
                 Shark shark = sharks.get(num);
                 if (shark == null) {
                     continue;
                 }
 
-                boolean empty = false;
+                boolean findEmpty = false;
 
                 int fy = -1;
                 int fx = -1;
@@ -48,27 +48,21 @@ public class Main {
                         continue;
                     }
 
-                    if (smellTime[ny][nx] < time - k) {
+                    if (smellTime[ny][nx] == -1 || smellTime[ny][nx] < time - k) {
                         fy = ny;
                         fx = nx;
                         fDir = dir;
-                        empty = true;
+                        findEmpty = true;
                         continue;
                     }
 
-                    if (!empty && smellShark[ny][nx] == num) {
+                    if (!findEmpty && smellShark[ny][nx] == num) {
                         fy = ny;
                         fx = nx;
                         fDir = dir;
                     }
                 }
 
-                smellTime[fy][fx] = time;
-                smellShark[fy][fx] = num;
-
-                shark.dir = fDir;
-                shark.y = fy;
-                shark.x = fx;
 
                 if (map[fy][fx] != 0 && map[fy][fx] != num) {
                     sharks.set(map[fy][fx], null);
@@ -77,6 +71,29 @@ public class Main {
 
                 map[fy][fx] = num;
                 map[shark.y][shark.x] = 0;
+
+                shark.dir = fDir;
+                shark.y = fy;
+                shark.x = fx;
+            }
+
+            for (int num = sharkNum; num > 0; num--) {
+                Shark shark = sharks.get(num);
+                if (shark == null) {
+                    continue;
+                }
+
+                if (smellTime[shark.y][shark.x] == time &&
+                        smellShark[shark.y][shark.x] != num &&
+                        smellShark[shark.y][shark.x] != 0) {
+                    sharks.set(smellShark[shark.y][shark.x], null);
+                    curSharkNum--;
+                }
+
+                smellTime[shark.y][shark.x] = time;
+                smellShark[shark.y][shark.x] = num;
+
+
             }
 
             if (curSharkNum == 1) {
@@ -105,7 +122,7 @@ public class Main {
             sharks.add(null);
         }
         for (int y = 0; y < len; y++) {
-            Arrays.fill(smellTime[y], -123465);
+            Arrays.fill(smellTime[y], -1);
         }
 
         for (int y = 0; y < len; y++) {
