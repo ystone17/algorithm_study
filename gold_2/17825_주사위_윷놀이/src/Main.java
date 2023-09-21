@@ -17,8 +17,7 @@ public class Main {
             {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 0},
             {0, 2, 4, 6, 8, 10, 13, 16, 19, 25, 30, 35, 40, 0},
             {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 25, 30, 35, 40, 0},
-            {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 28, 27, 26, 25, 30, 35, 40, 0}
-    };
+            {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 28, 27, 26, 25, 30, 35, 40, 0}};
     static int[][] map;
 
     static int[] dice = new int[10];
@@ -42,7 +41,6 @@ public class Main {
 
     static void req(int cnt) {
         if (cnt >= 10) {
-            knightSeq = new int[]{0, 0, 1, 0, 2, 2, 2, 0, 2, 2};
             int max = 0;
             knights.forEach(Knight::init);
             map = new int[4][30];
@@ -56,8 +54,25 @@ public class Main {
                 int nRouteNum = knight.routeNum == 0 && (knight.num == 5 || knight.num == 10 || knight.num == 15) ? knight.routeNum + 1 : knight.routeNum;
                 int nNum = Math.min(knight.num + dice[i], scoreMap[nRouteNum].length - 1);
 
-                if (scoreMap[nRouteNum].length != nNum + 1 &&  map[nRouteNum][nNum] != -1) {
+                if (scoreMap[nRouteNum].length != nNum + 1 && map[nRouteNum][nNum] != -1) {
                     return;
+                }
+
+                if (nNum == scoreMap[nRouteNum].length - 2) {
+                    if (map[0][scoreMap[0].length - 2] != -1 ||
+                            map[1][scoreMap[1].length - 2] != -1 ||
+                            map[2][scoreMap[2].length - 2] != -1 ||
+                            map[3][scoreMap[3].length - 2] != -1) {
+                        return;
+                    }
+                }
+
+                if (nRouteNum != 0 && scoreMap[nRouteNum].length - 4 <= nNum && nNum <= scoreMap[nRouteNum].length - 2) {
+                    if (map[1][scoreMap[1].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
+                            map[2][scoreMap[2].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
+                            map[3][scoreMap[3].length - (scoreMap[nRouteNum].length - nNum)] != -1) {
+                        return;
+                    }
                 }
 
                 map[knight.routeNum][knight.num] = -1;
@@ -70,9 +85,6 @@ public class Main {
             }
 
             res = Math.max(res, max);
-            if(max == 218) {
-                System.out.println(Arrays.toString(knightSeq));
-            }
             return;
         }
 
