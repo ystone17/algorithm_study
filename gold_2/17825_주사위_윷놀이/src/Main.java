@@ -50,28 +50,31 @@ public class Main {
 
             for (int i = 0; i < 10; i++) {
                 Knight knight = knights.get(knightSeq[i]);
+                if (isFinish(knight)) {
+                    continue;
+                }
 
-                int nRouteNum = knight.routeNum == 0 && (knight.num == 5 || knight.num == 10 || knight.num == 15) ? knight.routeNum + 1 : knight.routeNum;
+                int nRouteNum = getNewRouteNum(knight);
                 int nNum = Math.min(knight.num + dice[i], scoreMap[nRouteNum].length - 1);
 
-                if (scoreMap[nRouteNum].length != nNum + 1 && map[nRouteNum][nNum] != -1) {
-                    return;
+                if (nNum != scoreMap[nRouteNum].length - 1 && map[nRouteNum][nNum] != -1) {
+                    continue;
                 }
 
                 if (nNum == scoreMap[nRouteNum].length - 2) {
-                    if (map[0][scoreMap[0].length - 2] != -1 ||
-                            map[1][scoreMap[1].length - 2] != -1 ||
-                            map[2][scoreMap[2].length - 2] != -1 ||
-                            map[3][scoreMap[3].length - 2] != -1) {
-                        return;
+                    if (map[0][20] != -1 ||
+                            map[1][12] != -1 ||
+                            map[2][16] != -1 ||
+                            map[3][22] != -1) {
+                        continue;
                     }
                 }
 
-                if (nRouteNum != 0 && scoreMap[nRouteNum].length - 4 <= nNum && nNum <= scoreMap[nRouteNum].length - 2) {
+                if (nRouteNum != 0 && scoreMap[nRouteNum].length - 5 <= nNum && nNum < scoreMap[nRouteNum].length - 2) {
                     if (map[1][scoreMap[1].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
                             map[2][scoreMap[2].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
                             map[3][scoreMap[3].length - (scoreMap[nRouteNum].length - nNum)] != -1) {
-                        return;
+                        continue;
                     }
                 }
 
@@ -79,7 +82,6 @@ public class Main {
                 map[nRouteNum][nNum] = knightSeq[i];
                 knight.routeNum = nRouteNum;
                 knight.num = nNum;
-
 
                 max += scoreMap[knight.routeNum][knight.num];
             }
@@ -92,6 +94,24 @@ public class Main {
             knightSeq[cnt] = i;
             req(cnt + 1);
         }
+    }
+
+    private static int getNewRouteNum(Knight knight) {
+        int nRouteNum = knight.routeNum;
+        if (knight.routeNum == 0) {
+            if (knight.num == 5) {
+                nRouteNum = 1;
+            } else if (knight.num == 10) {
+                nRouteNum = 2;
+            } else if (knight.num == 15) {
+                nRouteNum = 3;
+            }
+        }
+        return nRouteNum;
+    }
+
+    private static boolean isFinish(Knight knight) {
+        return knight.num == scoreMap[knight.routeNum].length - 1;
     }
 
     static class Knight {
