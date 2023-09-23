@@ -58,7 +58,7 @@ public class Main {
                 int nNum = Math.min(knight.num + dice[i], scoreMap[nRouteNum].length - 1);
 
                 if (nNum != scoreMap[nRouteNum].length - 1 && map[nRouteNum][nNum] != -1) {
-                    continue;
+                    return;
                 }
 
                 if (nNum == scoreMap[nRouteNum].length - 2) {
@@ -66,7 +66,7 @@ public class Main {
                             map[1][12] != -1 ||
                             map[2][16] != -1 ||
                             map[3][22] != -1) {
-                        continue;
+                        return;
                     }
                 }
 
@@ -74,7 +74,7 @@ public class Main {
                     if (map[1][scoreMap[1].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
                             map[2][scoreMap[2].length - (scoreMap[nRouteNum].length - nNum)] != -1 ||
                             map[3][scoreMap[3].length - (scoreMap[nRouteNum].length - nNum)] != -1) {
-                        continue;
+                        return;
                     }
                 }
 
