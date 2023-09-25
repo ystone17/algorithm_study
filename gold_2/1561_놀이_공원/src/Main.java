@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,57 +10,67 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static long peopleNum, rideNum;
+    static int peopleNum, rideNum;
     static int[] rides;
 
     public static void main(String[] args) throws IOException {
-//        st = new StringTokenizer(br.readLine());
-//
-//        peopleNum = Integer.parseInt(st.nextToken());
-//        rideNum = Integer.parseInt(st.nextToken());
-//
-//        rides = new int[rideNum];
-//        st = new StringTokenizer(br.readLine());
-//
-//        for (int i = 0; i < rideNum; i++) {
-//            rides[i] = Integer.parseInt(st.nextToken());
-//        }
+        st = new StringTokenizer(br.readLine());
 
-        rides = new int[10000];
-        Arrays.fill(rides, 30);
-        for (int i = 1; i <= 30; i++) {
-            rides[i - 1] = i;
+        peopleNum = Integer.parseInt(st.nextToken());
+        rideNum = Integer.parseInt(st.nextToken());
+
+        rides = new int[rideNum];
+        st = new StringTokenizer(br.readLine());
+
+        for (int i = 0; i < rideNum; i++) {
+            rides[i] = Integer.parseInt(st.nextToken());
         }
 
-        long baseLcm = lcm(rides[0], rides[1]);
-        for (int i = 2; i < rides.length; i++) {
-            baseLcm = lcm(baseLcm, rides[i]);
+        int resTime = binarySearch(1, 2_000_000_000);
+        int res = 0;
+        for (int i = 0; i < rides.length; i++) {
+            res += resTime/ rides[i]  + 1;
+            if(res == peopleNum) {
+                System.out.println(i + 1);
+                return;
+            }
+
         }
-
-        peopleNum = peopleNum & baseLcm;
-
-
 
     }
 
-    static long lcm(long a, long b) {
-        return a * b / gcd(a, b);
-    }
+    static int binarySearch(int left, int right) {
+        int mid;
 
-    static long gcd(long a, long b) {
-        long temp;
-        if (a < b) {
-            temp = a;
-            a = b;
-            b = temp;
+        while (left < right) {
+            mid = (left + right) / 2;
+
+            if (search(mid) < 0) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
         }
 
-        while (b != 0) {
-            temp = a;
-            a = b;
-            b = temp % b;
+        return left;
+    }
+
+    static int search(int time) {
+        long total = 0;
+        for (int ride : rides) {
+            total += (time / ride) + 1;
         }
 
-        return a;
+        if (total == peopleNum) {
+            return 0;
+        }
+
+        if (total < peopleNum) {
+            return -1;
+        }
+
+        return 1;
     }
+
+
 }
