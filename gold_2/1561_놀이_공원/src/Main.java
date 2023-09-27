@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -26,12 +25,18 @@ public class Main {
             rides[i] = Integer.parseInt(st.nextToken());
         }
 
-        int resTime = binarySearch(1, 2_000_000_000);
+        long resTime = binarySearch(1, 60_000_000_000L);
         int res = 0;
+        int resNum = 0;
         for (int i = 0; i < rides.length; i++) {
-            res += resTime/ rides[i]  + 1;
-            if(res == peopleNum) {
-                System.out.println(i + 1);
+            res += resTime / rides[i] + 1;
+
+            if (resTime % rides[i] == 0 || resTime < rides[i]) {
+                resNum = i + 1;
+            }
+
+            if (res >= peopleNum) {
+                System.out.println(resNum);
                 return;
             }
 
@@ -39,8 +44,8 @@ public class Main {
 
     }
 
-    static int binarySearch(int left, int right) {
-        int mid;
+    static long binarySearch(long left, long right) {
+        long mid;
 
         while (left < right) {
             mid = (left + right) / 2;
@@ -55,7 +60,7 @@ public class Main {
         return left;
     }
 
-    static int search(int time) {
+    static int search(long time) {
         long total = 0;
         for (int ride : rides) {
             total += (time / ride) + 1;
