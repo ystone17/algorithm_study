@@ -6,11 +6,10 @@ import java.util.StringTokenizer;
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
     static int peopleNum, rideNum;
-    static int[] rides;
+    static int[] ridePlayTimes;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -18,35 +17,19 @@ public class Main {
         peopleNum = Integer.parseInt(st.nextToken());
         rideNum = Integer.parseInt(st.nextToken());
 
-        rides = new int[rideNum];
+        ridePlayTimes = new int[rideNum];
         st = new StringTokenizer(br.readLine());
 
         for (int i = 0; i < rideNum; i++) {
-            rides[i] = Integer.parseInt(st.nextToken());
+            ridePlayTimes[i] = Integer.parseInt(st.nextToken());
         }
 
-        long resTime = binarySearch(1, 60_000_000_000L);
-        int res = 0;
-        int resNum = 0;
-        for (int i = 0; i < rides.length; i++) {
-            res += resTime / rides[i] + 1;
 
-            if (resTime % rides[i] == 0 || resTime < rides[i]) {
-                resNum = i + 1;
-            }
-
-            if (res >= peopleNum) {
-                System.out.println(resNum);
-                return;
-            }
-
-        }
-
-    }
-
-    static long binarySearch(long left, long right) {
+        long answerTime;
+        long tempAnswerTime;
         long mid;
-
+        long left = 0;
+        long right = 2_000_000_000L * 30;
         while (left < right) {
             mid = (left + right) / 2;
 
@@ -56,14 +39,35 @@ public class Main {
                 right = mid;
             }
         }
+        answerTime = left;
+        tempAnswerTime = answerTime - 1;
+        int total = 0;
+        int res = 0;
+        if (tempAnswerTime != -1) {
+            for (int ridePlayTime : ridePlayTimes) {
+                total += (tempAnswerTime / ridePlayTime) + 1;
+            }
+        }
 
-        return left;
+        for (int rideIdx = 0; rideIdx < ridePlayTimes.length; rideIdx++) {
+            int ridePlayTime = ridePlayTimes[rideIdx];
+
+            if (answerTime % ridePlayTime == 0) {
+                total += 1;
+            }
+            if (total == peopleNum) {
+                res = rideIdx;
+                break;
+            }
+        }
+
+        System.out.println(res + 1);
     }
 
     static int search(long time) {
         long total = 0;
-        for (int ride : rides) {
-            total += (time / ride) + 1;
+        for (int ridePlayTime : ridePlayTimes) {
+            total += (time / ridePlayTime) + 1;
         }
 
         if (total == peopleNum) {
@@ -76,6 +80,4 @@ public class Main {
 
         return 1;
     }
-
-
 }
