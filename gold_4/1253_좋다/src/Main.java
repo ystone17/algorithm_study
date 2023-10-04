@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -13,7 +15,6 @@ public class Main {
 
     static int n, res;
     static int[] seq;
-    static Map<Integer, Boolean> map = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         n = Integer.parseInt(br.readLine());
@@ -23,15 +24,36 @@ public class Main {
             seq[i] = Integer.parseInt(st.nextToken());
         }
 
-        for (int a = 0; a < n; a++) {
-            for (int b = a + 1; b < n; b++) {
-                map.put(seq[a] + seq[b], true);
-            }
-        }
+        Arrays.sort(seq);
 
-        for (int i : seq) {
-            if (map.containsKey(i)) {
-                res++;
+        int left;
+        int right;
+        int sum;
+
+        for (int i = 0; i < seq.length; i++) {
+            left = 0;
+            right = seq.length - 1;
+
+            while (left < right) {
+                if (left == i) {
+                    left++;
+                    continue;
+                }
+
+                if (right == i) {
+                    right--;
+                    continue;
+                }
+                sum = seq[left] + seq[right];
+                if (sum == seq[i]) {
+                    res++;
+                    break;
+                }
+                if (sum < seq[i]) {
+                    left++;
+                } else {
+                    right--;
+                }
             }
         }
 
