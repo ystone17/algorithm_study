@@ -12,6 +12,7 @@ public class Main {
 
     static int n, m, res;
     static Queue<Position> q = new LinkedList<>();
+    static Queue<Position> subQ = new LinkedList<>();
     static int[][] lightOnMap, visited;
     static Map<Position, List<Position>> switchMap = new HashMap<>();
     static int[] dy = {0, 1, 0, -1};
@@ -41,48 +42,81 @@ public class Main {
 
         q.add(new Position(1, 1));
         lightOnMap[1][1] = 1;
-        while (!q.isEmpty()) {
-            Position curPos = q.poll();
-            if(visited[curPos.y][curPos.x] == 1) {
-                continue;
+        visited[1][1] = 1;
 
+        while (!q.isEmpty() || !subQ.isEmpty()) {
+
+            while (!q.isEmpty()) {
+                Position curPos = q.poll();
+
+                for (Position position : switchMap.getOrDefault(curPos, emptyList)) {
+                    lightOnMap[position.y][position.x] = 1;
+                    if (visited[position.y][position.x] == 1) {
+                        continue;
+                    }
+
+                    subQ.add(new Position(position.y, position.x));
+                }
+
+                for (int dir = 0; dir < 4; dir++) {
+                    int ny = curPos.y + dy[dir];
+                    int nx = curPos.x + dx[dir];
+
+                    if (ny < 1 || ny > n || nx < 1 || nx > n) {
+                        continue;
+                    }
+
+                    if (visited[ny][nx] == 1) {
+                        continue;
+                    }
+
+                    if (lightOnMap[ny][nx] != 1) {
+                        continue;
+                    }
+
+                    q.add(new Position(ny, nx));
+                    visited[ny][nx] = 1;
+                }
             }
 
-            visited[curPos.y][curPos.x] = 1;
+            while (!subQ.isEmpty()) {
+                Position curPos = subQ.poll();
 
-            for (Position position : switchMap.getOrDefault(curPos, emptyList)) {
-                lightOnMap[position.y][position.x] = 1;
-                if (visited[position.y][position.x] == 1) {
-                    continue;
-                }
-                if (canAddQueue(position)) {
-                    q.add(position);
-                }
-            }
+                for (Position position : switchMap.getOrDefault(curPos, emptyList)) {
+                    lightOnMap[position.y][position.x] = 1;
+                    if (visited[position.y][position.x] == 1) {
+                        continue;
+                    }
 
-            for (int dir = 0; dir < 4; dir++) {
-                int ny = curPos.y + dy[dir];
-                int nx = curPos.x + dx[dir];
-
-                if (ny < 1 || ny > n || nx < 1 || nx > n) {
-                    continue;
+                    q.add(new Position(position.y, position.x));
                 }
 
-                if (visited[ny][nx] == 1) {
-                    continue;
-                }
+                for (int dir = 0; dir < 4; dir++) {
+                    int ny = curPos.y + dy[dir];
+                    int nx = curPos.x + dx[dir];
 
-                if (lightOnMap[ny][nx] != 1) {
-                    continue;
-                }
+                    if (ny < 1 || ny > n || nx < 1 || nx > n) {
+                        continue;
+                    }
 
-                q.add(new Position(ny, nx));
+                    if (visited[ny][nx] == 1) {
+                        continue;
+                    }
+
+                    if (lightOnMap[ny][nx] != 1) {
+                        continue;
+                    }
+
+                    subQ.add(new Position(ny, nx));
+                    visited[ny][nx] = 1;
+                }
             }
         }
 
+
         for (int[] row : lightOnMap) {
             for (int i : row) {
-                if(i == 1) {
+                if (i == 1) {
                     res++;
                 }
             }
@@ -128,14 +162,6 @@ public class Main {
         @Override
         public int hashCode() {
             return Objects.hash(y, x);
-        }
-
-        @Override
-        public String toString() {
-            return "Position{" +
-                    "y=" + y +
-                    ", x=" + x +
-                    '}';
         }
     }
 }
