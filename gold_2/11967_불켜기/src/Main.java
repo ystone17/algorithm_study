@@ -34,18 +34,17 @@ public class Main {
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            Position position = new Position(y, x);
-            List<Position> switchList = switchMap.getOrDefault(position, new ArrayList<>());
-            switchList.add(new Position(a, b));
-            switchMap.put(position, switchList);
+            Position key = new Position(y, x);
+            List<Position> value = switchMap.getOrDefault(key, new ArrayList<>());
+            value.add(new Position(a, b));
+            switchMap.put(key, value);
         }
 
         q.add(new Position(1, 1));
         lightOnMap[1][1] = 1;
         visited[1][1] = 1;
 
-        while (!q.isEmpty() || !subQ.isEmpty()) {
-
+        while (!q.isEmpty()) {
             while (!q.isEmpty()) {
                 Position curPos = q.poll();
 
@@ -79,36 +78,19 @@ public class Main {
                 }
             }
 
-            while (!subQ.isEmpty()) {
-                Position curPos = subQ.poll();
+            int size = subQ.size();
 
-                for (Position position : switchMap.getOrDefault(curPos, emptyList)) {
-                    lightOnMap[position.y][position.x] = 1;
-                    if (visited[position.y][position.x] == 1) {
-                        continue;
-                    }
-
-                    q.add(new Position(position.y, position.x));
+            for (int i = 0; i < size; i++) {
+                Position cur = subQ.poll();
+                if (visited[cur.y][cur.x] == 1) {
+                    continue;
                 }
 
-                for (int dir = 0; dir < 4; dir++) {
-                    int ny = curPos.y + dy[dir];
-                    int nx = curPos.x + dx[dir];
-
-                    if (ny < 1 || ny > n || nx < 1 || nx > n) {
-                        continue;
-                    }
-
-                    if (visited[ny][nx] == 1) {
-                        continue;
-                    }
-
-                    if (lightOnMap[ny][nx] != 1) {
-                        continue;
-                    }
-
-                    subQ.add(new Position(ny, nx));
-                    visited[ny][nx] = 1;
+                if (canStart(cur)) {
+                    q.add(cur);
+                    visited[cur.y][cur.x] = 1;
+                } else {
+                    subQ.add(cur);
                 }
             }
         }
@@ -123,6 +105,23 @@ public class Main {
         }
 
         System.out.println(res);
+    }
+
+    private static boolean canStart(Position curPos) {
+        for (int dir = 0; dir < 4; dir++) {
+            int ny = curPos.y + dy[dir];
+            int nx = curPos.x + dx[dir];
+
+            if (ny < 1 || ny > n || nx < 1 || nx > n) {
+                continue;
+            }
+
+            if (visited[ny][nx] == 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static boolean canAddQueue(Position position) {
