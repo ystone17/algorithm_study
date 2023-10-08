@@ -118,16 +118,22 @@ public class Main {
         }
         int min = Integer.MAX_VALUE;
         int idx = -1;
-        for (int a = size - 1; a >= 0; a--) {
+        for (int a = 0; a < size; a++) {
             int temp = 0;
             for (int b = 0; b < size; b++) {
                 temp += dist[a][b] == 1_000_000 ? 0 : dist[a][b];
             }
-            if (min >= temp) {
+            if (min == temp) {
+                idx = bellmanNodes.get(idx) > bellmanNodes.get(a) ? a : idx;
+                continue;
+            }
+
+            if (min > temp) {
                 idx = a;
                 min = temp;
             }
         }
+
 
         return bellmanNodes.get(idx);
     }
