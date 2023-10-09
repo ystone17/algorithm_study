@@ -19,6 +19,7 @@ public class Main {
         init();
         bfs();
         sb.append(res.size()).append("\n");
+        Collections.sort(res);
         for (Integer i : res) {
             sb.append(i).append("\n");
         }
@@ -119,10 +120,15 @@ public class Main {
         int min = Integer.MAX_VALUE;
         int idx = -1;
         for (int a = 0; a < size; a++) {
-            int temp = 0;
+            int temp = -1;
+
             for (int b = 0; b < size; b++) {
-                temp += dist[a][b] == 1_000_000 ? 0 : dist[a][b];
+                if(dist[a][b] == 1_000_000) {
+                    continue;
+                }
+                temp = Math.max(temp, dist[a][b]);
             }
+
             if (min == temp) {
                 idx = bellmanNodes.get(idx) > bellmanNodes.get(a) ? a : idx;
                 continue;
