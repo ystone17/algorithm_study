@@ -10,7 +10,7 @@ public class Main {
     static StringTokenizer st;
 
     static int n, tubeSize, tubeMaxNum;
-    static List<List<Integer>> graph = new ArrayList<>();
+    static List<Set<Integer>> graph = new ArrayList<>();
     static PriorityQueue<Node> pq = new PriorityQueue<>();
     static int[] dist, visited;
 
@@ -24,7 +24,7 @@ public class Main {
         dist = new int[n + 1];
         visited = new int[n + 1];
         for (int i = 0; i < n + 1; i++) {
-            graph.add(new ArrayList<>());
+            graph.add(new HashSet<>());
         }
 
         List<Integer> temp = new ArrayList<>();
@@ -49,24 +49,29 @@ public class Main {
         visited[1] = 1;
         for (Integer next : graph.get(1)) {
             dist[next] = 1;
-            pq.add(new Node(next, 1));
         }
 
-        for (int i = 0; i < n - 2; i++) {
-            Node cur = pq.poll();
-            if (cur == null) {
-                break;
+        int cur;
+        int min;
+        for (int i = 0; i < n - 1; i++) {
+            cur = -1;
+            min = Integer.MAX_VALUE;
+            for (int j = 1; j <= n; j++) {
+                if (visited[j] == 0 && min > dist[j]) {
+                    min = dist[j];
+                    cur = j;
+                }
             }
 
-            if (visited[cur.next] == 1) {
+            if (cur == -1) {
                 continue;
             }
-            visited[cur.next] = 1;
 
-            for (Integer next : graph.get(cur.next)) {
-                if (visited[next] == 0 && dist[next] >= cur.dist + 1) {
-                    dist[next] = cur.dist + 1;
-                    pq.add(new Node(next, dist[next]));
+            visited[cur] = 1;
+
+            for (Integer next : graph.get(cur)) {
+                if (visited[next] == 0 && dist[next] >= dist[cur] + 1) {
+                    dist[next] = dist[cur] + 1;
                 }
             }
         }
