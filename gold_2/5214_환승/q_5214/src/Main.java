@@ -10,9 +10,9 @@ public class Main {
     static StringTokenizer st;
 
     static int n, tubeSize, tubeMaxNum;
-    static List<Set<Integer>> graph = new ArrayList<>();
-    static PriorityQueue<Node> pq = new PriorityQueue<>();
-    static int[] dist, visited;
+    static int[][] tubes;
+    static Queue<Node> q = new LinkedList<>();
+    static int[][] dist;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -21,76 +21,29 @@ public class Main {
         tubeSize = Integer.parseInt(st.nextToken());
         tubeMaxNum = Integer.parseInt(st.nextToken());
 
-        dist = new int[n + 1];
-        visited = new int[n + 1];
-        for (int i = 0; i < n + 1; i++) {
-            graph.add(new HashSet<>());
-        }
+        dist = new int[tubeMaxNum][n + 1];
+        tubes = new int[tubeMaxNum][tubeSize];
 
-        List<Integer> temp = new ArrayList<>();
         for (int tubeNum = 0; tubeNum < tubeMaxNum; tubeNum++) {
-            temp.clear();
             st = new StringTokenizer(br.readLine());
+
             for (int i = 0; i < tubeSize; i++) {
-                temp.add(Integer.parseInt(st.nextToken()));
-            }
-
-            for (int left = 0; left < temp.size(); left++) {
-                for (int right = left + 1; right < temp.size(); right++) {
-                    int r = temp.get(right);
-                    int l = temp.get(left);
-                    graph.get(l).add(r);
-                    graph.get(r).add(l);
-                }
+                tubes[tubeNum][i] = Integer.parseInt(st.nextToken());
             }
         }
 
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        visited[1] = 1;
-        for (Integer next : graph.get(1)) {
-            dist[next] = 1;
-        }
 
-        int cur;
-        int min;
-        for (int i = 0; i < n - 1; i++) {
-            cur = -1;
-            min = Integer.MAX_VALUE;
-            for (int j = 1; j <= n; j++) {
-                if (visited[j] == 0 && min > dist[j]) {
-                    min = dist[j];
-                    cur = j;
-                }
-            }
-
-            if (cur == -1) {
-                continue;
-            }
-
-            visited[cur] = 1;
-
-            for (Integer next : graph.get(cur)) {
-                if (visited[next] == 0 && dist[next] >= dist[cur] + 1) {
-                    dist[next] = dist[cur] + 1;
-                }
-            }
-        }
-
-        System.out.println(dist[n] == Integer.MAX_VALUE ? -1 : dist[n] + 1);
     }
 
-    private static class Node implements Comparable<Node> {
-        int next;
-        int dist;
+    static private class Node {
+        int tubeNum;
+        int num;
 
-        public Node(int next, int dist) {
-            this.next = next;
-            this.dist = dist;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return Integer.compare(dist, o.dist);
+        public Node(int tubeNum, int num) {
+            this.tubeNum = tubeNum;
+            this.num = num;
         }
     }
+
+
 }
