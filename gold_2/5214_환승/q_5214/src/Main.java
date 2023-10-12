@@ -11,8 +11,7 @@ public class Main {
 
     static int n, tubeSize, tubeMaxNum;
     static int[][] tubes;
-    static Queue<Node> q = new LinkedList<>();
-    static int[][] dist;
+    static int[] dist;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -21,7 +20,7 @@ public class Main {
         tubeSize = Integer.parseInt(st.nextToken());
         tubeMaxNum = Integer.parseInt(st.nextToken());
 
-        dist = new int[tubeMaxNum][n + 1];
+        dist = new int[n + 1];
         tubes = new int[tubeMaxNum][tubeSize];
 
         for (int tubeNum = 0; tubeNum < tubeMaxNum; tubeNum++) {
@@ -34,16 +33,4 @@ public class Main {
 
 
     }
-
-    static private class Node {
-        int tubeNum;
-        int num;
-
-        public Node(int tubeNum, int num) {
-            this.tubeNum = tubeNum;
-            this.num = num;
-        }
-    }
-
-
 }
