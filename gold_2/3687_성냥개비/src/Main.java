@@ -15,58 +15,77 @@ public class Main {
     static int[] max = {-1, -1, 1, 7, 4, 5, 9, 8};
     static PriorityQueue<Integer> maxPq = new PriorityQueue<>(Comparator.reverseOrder());
     static PriorityQueue<Integer> minPq = new PriorityQueue<>();
-    static List<Integer> zeroList = new ArrayList<>();
+    static List<List<Integer>> dp = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
+        for (int i = 0; i <= 100; i++) {
+            dp.add(new ArrayList<>());
+        }
+
+        dp.get(2).add(1);
+        dp.get(3).add(7);
+        dp.get(4).add(4);
+        dp.get(5).add(2);
+        dp.get(6).add(6);
+        dp.get(7).add(8);
+        dp.get(8).add(1);
+        dp.get(8).add(0);
+        dp.get(9).add(1);
+        dp.get(9).add(8);
+        dp.get(10).add(7);
+        dp.get(10).add(8);
+        dp.get(11).add(2);
+        dp.get(11).add(0);
+        dp.get(12).add(2);
+        dp.get(12).add(8);
+        dp.get(13).add(6);
+        dp.get(13).add(8);
+        dp.get(14).add(8);
+        dp.get(14).add(8);
+
+        for (int i = 15; i <= 100; i++) {
+            int minSize = 100_000;
+            int minIdx = -1;
+            for (int j = 7; j >= 2; j--) {
+                int size = dp.get(i - j).size();
+
+                if(size > minSize) {
+                    continue;
+                }
+
+                if(size < minSize) {
+                    minSize = size;
+                    minIdx = i - j;
+                    continue;
+                }
+
+
+            }
+
+        }
+
+
         tc = Integer.parseInt(br.readLine());
 
         while (tc-- > 0) {
             number = Integer.parseInt(br.readLine());
 
-            count = new int[7 + 1];
-            initMinCount(number);
-            minPq.clear();
-            zeroList.clear();
 
-            for (int i = 2; i <= 7; i++) {
-                if (i == 6) {
-                    continue;
+            {
+                count = new int[7 + 1];
+                initMaxCount(number);
+                maxPq.clear();
+
+                for (int i = 2; i <= 7; i++) {
+                    for (int j = 0; j < count[i]; j++) {
+                        maxPq.add(max[i]);
+                    }
                 }
-
-                for (int j = 0; j < count[i]; j++) {
-                    minPq.add(min[i]);
+                for (Integer integer : maxPq) {
+                    sb.append(integer);
                 }
+                sb.append("\n");
             }
-
-            if (minPq.isEmpty()) {
-                minPq.add(6);
-                count[6]--;
-            }
-
-            sb.append(minPq.poll());
-
-            for (int j = 0; j < count[6]; j++) {
-                minPq.add(0);
-            }
-
-            for (Integer integer : minPq) {
-                sb.append(integer);
-            }
-            sb.append(" ");
-
-            count = new int[7 + 1];
-            initMaxCount(number);
-            maxPq.clear();
-
-            for (int i = 2; i <= 7; i++) {
-                for (int j = 0; j < count[i]; j++) {
-                    maxPq.add(max[i]);
-                }
-            }
-            for (Integer integer : maxPq) {
-                sb.append(integer);
-            }
-            sb.append("\n");
 
         }
 
