@@ -17,77 +17,79 @@ public class Main {
 
         while (tc-- > 0) {
             sign = br.readLine().toCharArray();
-            if (check(sign)) {
-                sb.append("YES").append("\n");
-            } else {
-                sb.append("NO").append("\n");
-            }
+            sb.append(check(sign)).append("\n");
         }
 
         System.out.println(sb);
     }
 
-    private static boolean check(char[] sign) {
-        for (int i = sign.length - 1; i >= 0; ) {
-            if (sign[i] == '0') {
-                return false;
+    public static String check(char[] sign) {
+        int idx = 0;
+        int res;
+        while (idx < sign.length) {
+            if (sign[idx] == '0') {
+                if (isAType(sign, idx)) {
+                    idx += 2;
+                    continue;
+                }
+                return "NO";
+            } else {
+                res = getBTypeSize(sign, idx);
+                if (res == -1) {
+                    return "NO";
+                }
+                idx += res;
             }
-            boolean typeZeroOne = isTypeZeroOne(sign, i);
-            if (typeZeroOne) {
-                i -= 2;
-                continue;
-            }
-
-            int size = isTypeMulti(sign, i);
-            if (size == -1) {
-                return false;
-            }
-
-            i -= size;
         }
 
-        return true;
+        return "YES";
     }
 
-    private static int isTypeMulti(char[] sign, int endIdx) {
-        if (endIdx < 3) {
-            return -1;
-        }
-
-        int idx = endIdx;
-
-        while (idx >= 0 && sign[idx] == '1') {
-            idx--;
-        }
-
-        if (idx <= 1) {
-            return -1;
-        }
-
-        while (idx >= 0 && sign[idx] == '0') {
-            idx--;
-        }
-
-        if (idx < 0) {
-            return -1;
-        }
-
-        return endIdx - idx + 1;
-    }
-
-    private static boolean isTypeZeroOne(char[] sign, int endIdx) {
-        if (endIdx <= 0) {
+    private static boolean isAType(char[] sign, int idx) {
+        if (idx + 1 >= sign.length) {
             return false;
         }
 
-        if (sign[endIdx - 1] != '0' || sign[endIdx] != '1') {
-            return false;
+        return sign[idx + 1] == '1';
+    }
+
+    private static int getBTypeSize(char[] sign, int idx) {
+        if (idx + 3 >= sign.length) {
+            return -1;
         }
 
-        if (endIdx - 2 < 0) {
-            return true;
+        if (sign[idx + 1] == '1') {
+            return -1;
         }
 
-        return sign[endIdx - 2] != '0';
+        if (sign[idx + 2] == '1') {
+            return -1;
+        }
+
+        int cur = idx + 3;
+        while (cur < sign.length && sign[cur] == '0') {
+            cur++;
+        }
+
+        while (cur < sign.length && sign[cur] == '1') {
+            cur++;
+        }
+
+        if (cur >= sign.length) {
+            return cur - idx;
+        }
+
+        if (cur + 1 == sign.length) {
+            return -1;
+        }
+
+        if (sign[cur + 1] == '0') {
+            if (sign[cur - 2] == '0') {
+                return -1;
+            }
+            return cur - idx - 1;
+        }
+
+        return cur - idx;
     }
 }
