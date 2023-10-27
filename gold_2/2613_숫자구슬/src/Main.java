@@ -11,8 +11,8 @@ public class Main {
     static StringTokenizer st;
 
     static int n, m;
-    static int[] seq, partSum, size;
-    static int[][] dp;
+    static int[] seq, partSum, endIdxSeq;
+    static int[][] dpMax, dpEndIdx;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -21,8 +21,9 @@ public class Main {
 
         seq = new int[n + 1];
         partSum = new int[n + 1];
-        size = new int[m + 1];
-        dp = new int[n + 1][m + 1];
+        endIdxSeq = new int[m + 1];
+        dpMax = new int[n + 1][m + 1];
+        dpEndIdx = new int[n + 1][m + 1];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
@@ -30,38 +31,53 @@ public class Main {
             partSum[i + 1] = partSum[i] + seq[i + 1];
         }
 
-        int f = f(1, m);
-        System.out.println(f);
+        int[] f = f(1, m);
+        endIdxSeq[m] = f[1];
+        endIdxSeq[1] = n;
+
+        sb.append(endIdxSeq[endIdxSeq.length - 1]).append(" ");
+        for (int i = endIdxSeq.length - 2; i >= 1; i--) {
+            sb.append(endIdxSeq[i] - endIdxSeq[i + 1]).append(" ");
+        }
+
+        System.out.println(f[0]);
+        System.out.println(sb);
     }
 
-    static int f(int inStart, int k) {
-        if (dp[inStart][k] != 0) {
-            return dp[inStart][k];
+    static int[] f(int end, int k) {
+        if (dpMax[end][k] != 0) {
+            return new int[]{dpMax[end][k], dpEndIdx[end][k]};
         }
 
         if (k == 1) {
-            return dp[inStart][1] = partSum[n] - partSum[inStart - 1];
+            return new int[]{dpMax[end][1] = partSum[n] - partSum[end - 1], n};
         }
 
         int leftSum = 0;
         int rightSum;
+        int curEndIdx = 0;
+        int nextEndIdx = 0;
         int diff = Integer.MAX_VALUE;
         int max = 0;
 
-        for (int i = inStart; i <= n - k + 1; i++) {
+        for (int i = end; i <= n - k + 1; i++) {
             leftSum += seq[i];
-            rightSum = f(i + 1, k - 1);
+            int[] f = f(i + 1, k - 1);
+            rightSum = f[0];
 
             if (diff > Math.abs(leftSum - rightSum)) {
                 diff = Math.abs(leftSum - rightSum);
                 max = Math.max(leftSum, rightSum);
-
+                curEndIdx = i;
+                nextEndIdx = f[1];
             }
 
         }
 
-        return dp[inStart][k] = max;
+        endIdxSeq[k - 1] = nextEndIdx;
+        dpEndIdx[end][k] = curEndIdx;
+        dpMax[end][k] = max;
+        return new int[]{max, curEndIdx};
     }
-
 
 }
