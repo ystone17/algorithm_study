@@ -10,8 +10,9 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static int n, m, total;
-    static int[] seq;
+    static int n, m;
+    static int[] seq, partSum, size;
+    static int[][] dp;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -19,44 +20,65 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
 
         seq = new int[n + 1];
+        partSum = new int[n + 1];
+        size = new int[m + 1];
+        dp = new int[n + 1][m + 1];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             seq[i + 1] = Integer.parseInt(st.nextToken());
-            total += seq[i + 1];
+            partSum[i + 1] = partSum[i] + seq[i + 1];
         }
 
-        int left = 1;
-        int right = total;
-        int mid;
+        int f = f(1, m);
+        sb.append(f).append("\n");
 
-        while (left < right) {
-            mid = (left + right) / 2;
-
-            if (possible(mid)) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-
-        System.out.println(left);
-
-    }
-
-    private static boolean possible(int k) {
         int count = 0;
         int sum = 0;
         for (int i = 1; i <= n; i++) {
-            if (sum + seq[i] > k) {
+            if (sum + seq[i] <= f && n - (i - 1) >= m) {
+                sum += seq[i];
                 count++;
-                sum = 0;
+                continue;
             }
-            sum += seq[i];
+
+            sb.append(count).append(" ");
+            sum = seq[i];
+            count = 1;
+            m--;
         }
 
-        return count == m;
+        sb.append(count);
+
+        System.out.println(sb);
     }
 
+    static int f(int inStart, int k) {
+        if (dp[inStart][k] != 0) {
+            return dp[inStart][k];
+        }
 
+        if (k == 1) {
+            return dp[inStart][1] = partSum[n] - partSum[inStart - 1];
+        }
+
+        int leftSum = 0;
+        int rightSum;
+        int diff = Integer.MAX_VALUE;
+        int max = 0;
+
+        for (int i = inStart; i <= n - k + 1; i++) {
+            leftSum += seq[i];
+            rightSum = f(i + 1, k - 1);
+
+            if (diff > Math.abs(leftSum - rightSum)) {
+                diff = Math.abs(leftSum - rightSum);
+                max = Math.max(leftSum, rightSum);
+
+            }
+
+        }
+
+        return dp[inStart][k] = max;
+    }
 }
