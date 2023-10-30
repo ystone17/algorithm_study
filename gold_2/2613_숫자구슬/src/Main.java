@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,6 +15,7 @@ public class Main {
     static int n, m;
     static int[] seq, partSum, size;
     static int[][] dp;
+    static List<Integer> border = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -30,35 +33,36 @@ public class Main {
             partSum[i + 1] = partSum[i] + seq[i + 1];
         }
 
-        int f = f(1, m);
-        sb.append(f).append("\n");
+        int min = f(1, m);
+        sb.append(min).append("\n");
 
-        int count = 0;
-        int sum = 0;
-        for (int i = 1; i <= n; i++) {
-            if (sum + seq[i] <= f && n - (i - 1) >= m) {
-                sum += seq[i];
-                count++;
-                continue;
+        border.add(0);
+        for (int groupCount = m - 1; groupCount >= 1; groupCount--) {
+            for (int inStart = 1; inStart <= n; inStart++) {
+                if (dp[inStart][groupCount] == 0) continue;
+
+                if (dp[inStart][groupCount] <= min) {
+                    min = dp[inStart][groupCount];
+                    border.add(inStart - 1);
+                    break;
+                }
             }
-
-            sb.append(count).append(" ");
-            sum = seq[i];
-            count = 1;
-            m--;
         }
+        border.add(n);
 
-        sb.append(count);
+        for (int i = 0; i < border.size() - 1; i++) {
+            sb.append(border.get(i + 1) - border.get(i)).append(" ");
+        }
 
         System.out.println(sb);
     }
 
-    static int f(int inStart, int k) {
-        if (dp[inStart][k] != 0) {
-            return dp[inStart][k];
+    static int f(int inStart, int groupCount) {
+        if (dp[inStart][groupCount] != 0) {
+            return dp[inStart][groupCount];
         }
 
-        if (k == 1) {
+        if (groupCount == 1) {
             return dp[inStart][1] = partSum[n] - partSum[inStart - 1];
         }
 
@@ -67,9 +71,9 @@ public class Main {
         int diff = Integer.MAX_VALUE;
         int max = 0;
 
-        for (int i = inStart; i <= n - k + 1; i++) {
+        for (int i = inStart; i <= n - (groupCount - 1); i++) {
             leftSum += seq[i];
-            rightSum = f(i + 1, k - 1);
+            rightSum = f(i + 1, groupCount - 1);
 
             if (diff > Math.abs(leftSum - rightSum)) {
                 diff = Math.abs(leftSum - rightSum);
@@ -79,6 +83,6 @@ public class Main {
 
         }
 
-        return dp[inStart][k] = max;
+        return dp[inStart][groupCount] = max;
     }
 }
