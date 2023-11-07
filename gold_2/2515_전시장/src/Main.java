@@ -11,7 +11,7 @@ public class Main {
 
     static int n, s;
     static List<Paint> paints = new ArrayList<>();
-    static int[] dp;
+    static int[] dp, last;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -27,36 +27,26 @@ public class Main {
 
         Collections.sort(paints);
 
-        dp = new int[n];
+        paints.add(0, new Paint(0, 0));
 
-        for (int i = 0; i < n; i++) {
-            dp[i] = getDp(i);
-        }
+        dp = new int[n + 1];
+        last = new int[n + 1];
 
-        int res = 0;
-        for (int i : dp) {
-            res = Math.max(res, i);
-        }
-
-        System.out.println(res);
-    }
-
-    static int getDp(int k) {
-        if(dp[k] != 0) {
-            return dp[k];
-        }
-
-        int max = 0;
-        int kHeight = paints.get(k).height;
-        for (int i = k + 1; i < n; i++) {
-            if (paints.get(i).height - kHeight < s) {
-                continue;
+        for (int i = 1; i < paints.size(); i++) {
+            for (int j = last[i - 1]; j < i; j++) {
+                if (paints.get(i).height - paints.get(j).height >= s) {
+                    last[i] = j;
+                    continue;
+                }
+                break;
             }
-
-            max = Math.max(max, getDp(i));
         }
 
-        return dp[k] = max + paints.get(k).price;
+        for (int i = 1; i < dp.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[last[i]] + paints.get(i).price);
+        }
+
+        System.out.println(dp[n]);
     }
 
     static class Paint implements Comparable<Paint> {
