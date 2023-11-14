@@ -18,6 +18,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         n = Integer.parseInt(br.readLine());
+        if (n == 1) {
+            System.out.println(1);
+            return;
+        }
 
         input = new int[n][4];
         count = new int[n];
@@ -98,7 +102,7 @@ public class Main {
             bunSu.yakBun();
         }
 
-        int x = 1;
+        long x = 1;
 
         for (BunSu bunSu : bunSuList) {
             x = lcm(x, bunSu.bunMo);
@@ -116,15 +120,15 @@ public class Main {
         System.out.println(sb);
     }
 
-    static int gcd(int a, int b) {
+    static long gcd(long a, long b) {
         if (a < b) {
-            int temp = a;
+            long temp = a;
             a = b;
             b = temp;
         }
 
         while (b != 0) {
-            int temp = a;
+            long temp = a;
             a = b;
             b = temp % b;
         }
@@ -132,13 +136,13 @@ public class Main {
         return a;
     }
 
-    static int lcm(int a, int b) {
+    static long lcm(long a, long b) {
         return a * b / gcd(a, b);
     }
 
     static class BunSu {
-        int bunJa = 1;
-        int bunMo = 1;
+        long bunJa = 1;
+        long bunMo = 1;
         int counterNum;
 
         public BunSu() {
@@ -146,12 +150,9 @@ public class Main {
         }
 
         public void yakBun() {
-            for (int i = 2; i <= 9; i++) {
-                if (bunJa % i == 0 && bunMo % i == 0) {
-                    bunJa /= i;
-                    bunMo /= i;
-                }
-            }
+            long gcd = gcd(bunJa, bunMo);
+            bunJa /= gcd;
+            bunMo /= gcd;
         }
     }
 }
