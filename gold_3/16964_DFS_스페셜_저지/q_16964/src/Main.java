@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
@@ -11,9 +9,9 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static int n;
+    static int n, idx;
     static List<List<Integer>> graph = new ArrayList<>();
-    static int[] answerSeq;
+    static int[] answerSeq, priority, visited, findSeq;
 
     public static void main(String[] args) throws IOException {
         n = Integer.parseInt(br.readLine());
@@ -21,8 +19,11 @@ public class Main {
         for (int i = 0; i < n + 1; i++) {
             graph.add(new ArrayList<>());
         }
-        graph.get(1).add(0);
+
         answerSeq = new int[n];
+        findSeq = new int[n];
+        priority = new int[n + 1];
+        visited = new int[n + 1];
 
         for (int i = 0; i < n - 1; i++) {
             st = new StringTokenizer(br.readLine());
@@ -36,31 +37,36 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             answerSeq[i] = Integer.parseInt(st.nextToken());
+            priority[answerSeq[i]] = i;
         }
 
-        int dfs = dfs(1, 0);
-        System.out.println(dfs == -1 ? 0 : 1);
-    }
-
-    private static int dfs(int root, int seqIdx) {
-
-        List<Integer> children = graph.get(root);
-        int size = 1;
-
-        for (int i = 0; i < children.size() - 1; i++) {
-            if (!children.contains(answerSeq[seqIdx + size])) {
-                return -1;
-            }
-
-            int dfs = dfs(answerSeq[seqIdx + size], seqIdx + size);
-            if (dfs == -1) {
-                return -1;
-            }
-            size += dfs;
-
+        for (List<Integer> list : graph) {
+            list.sort(Comparator.comparingInt(o -> priority[o]));
         }
 
-        return size;
+        findSeq[idx++] = 1;
+        visited[1] = 1;
+        dfs(1);
+
+        for (int i = 0; i < n; i++) {
+            if (findSeq[i] != answerSeq[i]) {
+                System.out.println(0);
+                return;
+            }
+        }
+
+        System.out.println(1);
     }
 
+    private static void dfs(int cur) {
+        for (Integer next : graph.get(cur)) {
+            if (visited[next] == 1) {
+                continue;
+            }
+
+            visited[next] = 1;
+            findSeq[idx++] = next;
+            dfs(next);
+        }
+    }
 }
