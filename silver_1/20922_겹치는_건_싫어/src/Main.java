@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,50 +15,55 @@ public class Main {
 
     static int n, k;
     static int[] seq;
-    static int[][] counting;
+    static Map<Integer, Integer> countByNum = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
 
-        seq = new int[n + 1];
-        counting = new int[MAX_NUM + 1][n + 1];
+        seq = new int[n];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            seq[i + 1] = Integer.parseInt(st.nextToken());
-            for (int j = 1; j <= MAX_NUM; j++) {
-                counting[j][i + 1] = counting[j][i];
-            }
-            counting[seq[i + 1]][i + 1]++;
+            seq[i] = Integer.parseInt(st.nextToken());
         }
 
+        int max = 0;
         int left = 0;
-        int right = n;
-        int mid;
+        int right = 0;
+        countByNum.put(seq[0], 1);
 
-        while (left < right) {
-            mid = (left + right) / 2;
+        while (right < n - 1) {
 
-            if (ok(mid)) {
-                left = mid + 1;
-            } else {
-                right = mid;
+            var count = countByNum.getOrDefault(seq[right + 1], 0);
+
+            if (count + 1 <= k) {
+                right++;
+                countByNum.put(seq[right], count + 1);
+                max = Math.max(max, right - left + 1);
+                continue;
             }
+
+            countByNum.put(seq[left], countByNum.get(seq[left]) - 1);
+            left++;
         }
 
-        System.out.println(left - 1);
+        System.out.println(max);
     }
 
     static boolean ok(int mid) {
         boolean isOk;
         for (int i = 1; i <= n - mid + 1; i++) {
             isOk = true;
-            for (int j = 1; j <= MAX_NUM; j++) {
-                if (counting[j][i + mid - 1] - counting[j][i - 1] > k) {
+            countByNum.clear();
+
+            for (int j = i; j < i + mid; j++) {
+                var count = countByNum.getOrDefault(seq[j], 0);
+                if (count + 1 > k) {
                     isOk = false;
                     break;
                 }
+                countByNum.put(seq[j], count + 1);
             }
             if (isOk) {
                 return true;
