@@ -11,6 +11,7 @@ public class Main {
 
     static int n, m;
     static List<List<Integer>> graph = new ArrayList<>();
+    static Queue<Integer> q = new LinkedList<>();
     static boolean[] visited;
     static int[] count;
 
@@ -32,35 +33,40 @@ public class Main {
             graph.get(a).add(b);
         }
 
+        for (int i = 1; i <= n; i++) {
+            bfs(i);
+        }
+
         int max = 0;
         for (int i = 1; i <= n; i++) {
-            visited = new boolean[10001];
-            dfs(i);
+            max = Math.max(max, count[i]);
         }
 
         for (int i = 1; i <= n; i++) {
-            if (max < count[i]) {
-                max = count[i];
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            if (max == count[i]) {
+            if (count[i] == max) {
                 sb.append(i).append(" ");
             }
         }
+
         System.out.println(sb.toString());
-
-
     }
 
-    static void dfs(int k) {
-        visited[k] = true;
+    static void bfs(int k) {
+        visited = new boolean[n + 1];
+        q.clear();
 
-        for (Integer next : graph.get(k)) {
-            if (visited[next]) continue;
-            count[next]++;
-            dfs(next);
+        visited[k] = true;
+        q.add(k);
+
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+
+            for (int next : graph.get(cur)) {
+                if (visited[next]) continue;
+                visited[next] = true;
+                count[next]++;
+                q.add(next);
+            }
         }
     }
 }
