@@ -11,19 +11,19 @@ public class Main {
     static StringTokenizer st;
 
     static String[] MBTI = new String[]{"ENFJ", "ENFP", "ENTJ", "ENTP", "ESFJ", "ESFP", "ESTJ", "ESTP", "INFJ", "INFP", "INTJ", "INTP", "ISFJ", "ISFP", "ISTJ", "ISTP"};
-    static int tc, n, min, abc, ab, bc, ca;
+    static int tc, n, min, ab, bc, ca;
     static Map<String, Integer> countByMbti = new HashMap<>();
     static char[][] mbtis;
 
     public static void main(String[] args) throws IOException {
         tc = Integer.parseInt(br.readLine());
-        for (String s : MBTI) {
-            countByMbti.put(s, 0);
-        }
 
         while (tc-- > 0) {
             n = Integer.parseInt(br.readLine());
             mbtis = new char[100000][4];
+            for (String s : MBTI) {
+                countByMbti.put(s, 0);
+            }
 
             st = new StringTokenizer(br.readLine());
             for (int i = 0; i < n; i++) {
@@ -36,6 +36,9 @@ public class Main {
             for (int a = 0; a < 16; a++) {
                 for (int b = a + 1; b < 16; b++) {
                     for (int c = b + 1; c < 16; c++) {
+                        ab = 0;
+                        bc = 0;
+                        ca = 0;
                         int aCount = countByMbti.get(MBTI[a]);
                         int bCount = countByMbti.get(MBTI[b]);
                         int cCount = countByMbti.get(MBTI[c]);
@@ -61,14 +64,35 @@ public class Main {
                         }
 
                         if (aCount == 0) {
-                            min = Math.min(min, bc);
-                        } else if (bCount == 0) {
-                            min = Math.min(min, ca);
-                        } else if (cCount == 0) {
-                            min = Math.min(min, ab);
+                            min = Math.min(min, bc * 2);
+                            continue;
+                        }
+                        if (bCount == 0) {
+                            min = Math.min(min, ca * 2);
+                            continue;
+                        }
+                        if (cCount == 0) {
+                            min = Math.min(min, ab * 2);
+                            continue;
                         }
 
-                        min = Math.min(min, Math.min(Math.min(ab, bc), ca));
+                        if (aCount + bCount + cCount == 4) {
+                            if (aCount == 2) {
+                                min = Math.min(min, Math.min(ab + bc + ca, Math.min(ca * c, ab * 2)));
+                                continue;
+                            }
+                            if (bCount == 2) {
+                                min = Math.min(min, Math.min(ab + bc + ca, Math.min(ab * 2, bc * 2)));
+                                continue;
+                            }
+                            if (cCount == 2) {
+                                min = Math.min(min, Math.min(ab + bc + ca, Math.min(bc * 2, ca * 2)));
+                                continue;
+                            }
+                            continue;
+                        }
+
+                        min = Math.min(min, Math.min(ab + bc + ca, Math.min(ab * 2, Math.min(bc * 2, ca * 2))));
                     }
                 }
             }
