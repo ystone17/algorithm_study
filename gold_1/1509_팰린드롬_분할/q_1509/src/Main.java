@@ -1,53 +1,59 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
-    static StringTokenizer st;
 
-    static int min;
     static String s;
     static char[] seq;
-    static int[][] dp;
+    static boolean[][] palindrome;
+    static int[] dp;
 
     public static void main(String[] args) throws IOException {
         s = br.readLine();
-        seq = s.toCharArray();
-        dp = new int[s.length()][s.length()];
 
-        for (int left = s.length() - 1; left >= 0; left--) {
-            dp[left][left] = 1;
-            for (int right = left + 1; right < s.length(); right++) {
-                if (isOk(left, right)) {
-                    dp[left][right] = 1;
+        seq = new char[s.length() + 1];
+        for (int i = 0; i < s.length(); i++) {
+            seq[i + 1] = s.charAt(i);
+        }
+
+        palindrome = new boolean[s.length() + 1][s.length() + 1];
+        for (int i = 1; i <= s.length(); i++) {
+            palindrome[i][i] = true;
+            if (i < s.length()) {
+                palindrome[i][i + 1] = seq[i] == seq[i + 1];
+            }
+            if (i < s.length() - 1) {
+                palindrome[i][i + 2] = seq[i] == seq[i + 2];
+            }
+        }
+
+        for (int left = s.length(); left > 0; left--) {
+            for (int right = left + 3; right <= s.length(); right++) {
+                if (seq[left] != seq[right]) {
                     continue;
                 }
 
-                min = 100_000_000;
-                for (int i = 1; i <= right - left; i++) {
-                    min = Math.min(min, dp[left][left + i - 1] + dp[left + i][right]);
+                palindrome[left][right] = (palindrome[left + 1][right - 1]);
+            }
+        }
+
+
+        dp = new int[s.length() + 1];
+
+        for (int right = 1; right <= s.length(); right++) {
+            dp[right] = 100_000_000;
+            for (int left = 1; left <= right; left++) {
+                if (palindrome[left][right]) {
+                    dp[right] = Math.min(dp[right], dp[left - 1] + 1);
                 }
-                dp[left][right] = min;
             }
         }
 
-        System.out.print(dp[0][s.length() - 1]);
-    }
-
-    static boolean isOk(int left, int right) {
-        while (left < right) {
-            if (seq[left] != seq[right]) {
-                return false;
-            }
-
-            left++;
-            right--;
-        }
-
-        return true;
+        System.out.print(dp[s.length()]);
     }
 }
