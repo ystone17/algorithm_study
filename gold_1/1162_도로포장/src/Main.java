@@ -11,7 +11,7 @@ public class Main {
 
     static int v, e, k;
     static List<List<Edge>> graph = new ArrayList<>();
-    static int[][] visited;
+    static long[][] visited;
     static PriorityQueue<Edge> pq = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException {
@@ -21,11 +21,11 @@ public class Main {
         e = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i <= e; i++) {
+        for (int i = 0; i <= v; i++) {
             graph.add(new ArrayList<>());
         }
 
-        visited = new int[v + 1][k + 1];
+        visited = new long[v + 1][k + 1];
 
         for (int i = 0; i < e; i++) {
             st = new StringTokenizer(br.readLine());
@@ -34,10 +34,11 @@ public class Main {
             int weight = Integer.parseInt(st.nextToken());
 
             graph.get(from).add(new Edge(to, weight, 0));
+            graph.get(to).add(new Edge(from, weight, 0));
         }
 
         for (int i = 0; i < visited.length; i++) {
-            Arrays.fill(visited[i], Integer.MAX_VALUE);
+            Arrays.fill(visited[i], Long.MAX_VALUE);
         }
 
         pq.add(new Edge(1, 0, 0));
@@ -67,8 +68,8 @@ public class Main {
             }
         }
 
-        int min = Integer.MAX_VALUE;
-        for (int i : visited[v]) {
+        long min = Long.MAX_VALUE;
+        for (long i : visited[v]) {
             min = Math.min(min, i);
         }
 
@@ -77,10 +78,10 @@ public class Main {
 
     static class Edge implements Comparable<Edge> {
         int to;
-        int weight;
+        long weight;
         int k;
 
-        public Edge(int to, int weight, int k) {
+        public Edge(int to, long weight, int k) {
             this.to = to;
             this.weight = weight;
             this.k = k;
@@ -89,7 +90,7 @@ public class Main {
 
         @Override
         public int compareTo(Edge o) {
-            return Integer.compare(weight, o.weight);
+            return Long.compare(weight, o.weight);
         }
     }
 
