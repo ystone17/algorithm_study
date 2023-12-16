@@ -1,22 +1,22 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
     static int n, m;
     static int[][] map, dir;
-    static Queue<Integer> q = new LinkedList<>();
+    static Deque<Integer> q = new LinkedList<>();
 
     static int[] dy = {0, 1, 0, -1, 0};
     static int[] dx = {-1, 0, 1, 0, -1};
+    static int[] res = new int[4];
 
     public static void main(String[] args) throws IOException {
         read();
@@ -26,6 +26,8 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             simulation(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         }
+
+        System.out.println(res[1] + res[2] * 2 + res[3] * 3);
     }
 
     private static void read() throws IOException {
@@ -37,7 +39,7 @@ public class Main {
         dir = new int[n + 1][6];
         int base = 0;
         int plus = 0;
-        for (int i = 3; i <= n; i++) {
+        for (int i = 1; i <= n; i++) {
             base++;
             plus += 2;
             for (int j = 1; j <= 4; j++) {
@@ -56,7 +58,7 @@ public class Main {
     }
 
     private static void extractQueue() {
-        q.add(0);
+        q.add(-1);
         int y = n / 2;
         int x = n / 2;
         int d;
@@ -113,16 +115,22 @@ public class Main {
             }
             y -= dy[d];
             x -= dx[d];
-            d = 0;
-            y += dy[d];
-            x += dx[d];
+        }
+
+        while (q.peekLast() == 0) {
+            q.pollLast();
         }
     }
 
     static void simulation(int d, int s) {
         d = convertD(d);
         blizzard(d, s);
-
+        while (true) {
+            if (!bomb()) {
+                break;
+            }
+        }
+        change();
     }
 
     private static void blizzard(int d, int s) {
@@ -131,7 +139,7 @@ public class Main {
             if (si > s) {
                 break;
             }
-            if (i == dir[d][si]) {
+            if (i == dir[si][d]) {
                 q.poll();
                 si++;
                 continue;
@@ -144,7 +152,7 @@ public class Main {
     }
 
     private static void init() {
-        while (q.peek() != 0) {
+        while (q.peek() != -1) {
             q.add(q.poll());
         }
     }
@@ -159,6 +167,72 @@ public class Main {
                 return 3;
             default:
                 return 2;
+        }
+    }
+
+    private static boolean bomb() {
+        int number = 0;
+        int count = 0;
+        boolean boom = false;
+
+        int size = q.size();
+        while (size-- > 0) {
+            if (q.peek() == number) {
+                count++;
+            } else {
+                if (count >= 4) {
+                    for (int i = 0; i < count; i++) {
+                        q.pollLast();
+                    }
+                    res[number] += count;
+                    boom = true;
+                }
+                number = q.peek();
+                count = 1;
+            }
+
+            q.add(q.poll());
+        }
+
+        if (count >= 4) {
+            for (int i = 0; i < count; i++) {
+                q.pollLast();
+            }
+            res[number] += count;
+            boom = true;
+        }
+
+        return boom;
+    }
+
+    private static void change() {
+        q.poll();
+        if (q.isEmpty()) {
+            q.add(-1);
+            return;
+        }
+        int number = q.peek();
+        int count = 0;
+        int size = q.size();
+
+        while (size-- > 0) {
+            if (number == q.peek()) {
+                count++;
+            } else {
+                q.add(count);
+                q.add(number);
+
+                number = q.peek();
+                count = 1;
+            }
+
+            q.poll();
+        }
+        q.addFirst(-1);
+
+        size = q.size() - n * n;
+        while (size-- > 0) {
+            q.pollLast();
         }
     }
 }
