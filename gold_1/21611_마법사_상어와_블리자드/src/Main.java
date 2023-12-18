@@ -211,6 +211,7 @@ public class Main {
             q.add(-1);
             return;
         }
+        q.addLast(100);
         int number = q.peek();
         int count = 0;
         int size = q.size();
