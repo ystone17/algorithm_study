@@ -32,9 +32,9 @@ public class Main {
             }
 
             if (sIdx == s.length()) {
-                System.out.println("YES");
+                System.out.println("Yes");
             } else {
-                System.out.println("NO");
+                System.out.println("No");
             }
         }
 
