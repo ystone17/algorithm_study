@@ -14,8 +14,8 @@ public class Main {
     static int n, m;
     static char[][] map;
     static boolean[][] visited;
-    static int[] dy = {0, 1, 0, -1};
-    static int[] dx = {1, 0, 1, -1};
+    static int[] dy = {1, 0, -1, 0};
+    static int[] dx = {0, -1, 0, 1};
     static Queue<Pos> q = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
