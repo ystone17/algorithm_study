@@ -23,29 +23,18 @@ public class Main {
                 continue;
             }
 
-            if ((s1.p == s2.x && s1.y < s2.q)
-                    || (s1.x == s2.p && s1.y < s2.q)
-                    || (s1.q == s2.y && s1.p > s2.x)
-                    || (s1.y == s1.q && s1.p > s2.x)) {
+            if ((s1.p == s2.x && (s1.y < s2.q || s1.q > s2.y))
+                    || (s1.x == s2.p && (s1.y < s2.q || s1.q > s2.y))
+                    || (s1.q == s2.y && (s1.p > s2.x || s1.x < s2.p))
+                    || (s1.y == s1.q && (s1.p > s2.x || s1.x < s2.p))) {
                 System.out.println("b");
                 continue;
             }
 
-            if (s1.x <= s2.x && s1.y <= s2.y && s1.p >= s2.p && s1.q >= s2.q) {
+            if (s1.y <= s2.q && s1.q >= s2.y && s1.x <= s1.p && s1.p >= s2.x) {
                 System.out.println("a");
                 continue;
             }
-
-            if (((s1.x <= s2.x && s2.x <= s1.p) && (s1.y <= s2.y && s2.y <= s1.q))
-                    || ((s1.x <= s2.p && s2.p <= s1.p) && (s1.y <= s2.q && s2.q <= s1.q))
-                    || ((s1.x <= s2.p && s2.p <= s1.p) && (s1.y <= s2.y && s2.y <= s1.q))
-                    || ((s1.x <= s2.x && s2.x <= s1.p) && (s1.y <= s2.q && s2.q <= s1.q))
-            ) {
-                System.out.println("a");
-                continue;
-            }
-
-
 
 
             System.out.println("d");
