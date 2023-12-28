@@ -15,30 +15,28 @@ public class Main {
             var s1 = new Square(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
             var s2 = new Square(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
 
-            if ((s1.p == s2.x && s1.q == s2.y)
-                    || (s1.x == s2.p && s1.y == s2.q)
-                    || (s1.p == s2.x && s1.y == s2.q)
-                    || (s1.x == s2.p && s1.q == s2.y)) {
+            if (s1.y > s2.q
+                    || s1.q < s2.y
+                    || s1.x > s2.p
+                    || s1.p < s2.x) {
+                System.out.println("d");
+                continue;
+            }
+
+            if (s1.p == s2.x && s1.q == s2.y
+                    || s1.x == s2.p && s1.y == s2.q
+                    || s1.p == s2.x && s1.y == s2.q
+                    || s1.x == s2.p && s1.q == s2.y) {
                 System.out.println("c");
                 continue;
             }
 
-            if ((s1.p == s2.x && (s1.y < s2.q || s1.q > s2.y))
-                    || (s1.x == s2.p && (s1.y < s2.q || s1.q > s2.y))
-                    || (s1.q == s2.y && (s1.p > s2.x || s1.x < s2.p))
-                    || (s1.y == s1.q && (s1.p > s2.x || s1.x < s2.p))) {
+            if (s1.p == s2.x || s1.x == s2.p || s1.q == s2.y || s1.y == s2.q) {
                 System.out.println("b");
                 continue;
             }
 
-            if (s1.y <= s2.q && s1.q >= s2.y && s1.x <= s1.p && s1.p >= s2.x) {
-                System.out.println("a");
-                continue;
-            }
-
-
-            System.out.println("d");
-
+            System.out.println("a");
         }
     }
 
