@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -40,7 +41,13 @@ public class Main {
 
                 for (int mid = Math.min(me, u) + 1; mid < Math.max(me, u); mid++) {
 
-                    if (!isSee(dy, dx, mid, heights[mid])) {
+                    if (!isSee(
+                            BigInteger.valueOf(dx),
+                            BigInteger.valueOf(dy),
+                            BigInteger.valueOf(me),
+                            BigInteger.valueOf(heights[me]),
+                            BigInteger.valueOf(mid),
+                            BigInteger.valueOf(heights[mid]))) {
                         canSee = false;
                         break;
                     }
@@ -56,12 +63,17 @@ public class Main {
         System.out.println(max);
     }
 
-    private static boolean isSee(int dy, int dx, int my, int mx) {
-        if (dx < 0) {
-            dx = -dx;
-            dy = -dy;
+    private static boolean isSee(BigInteger dx,
+                                 BigInteger dy,
+                                 BigInteger ax,
+                                 BigInteger ay,
+                                 BigInteger mx,
+                                 BigInteger my) {
+        if (dx.compareTo(BigInteger.ZERO) < 0) {
+            dx = dx.multiply(BigInteger.valueOf(-1));
+            dy = dy.multiply(BigInteger.valueOf(-1));
         }
 
-        return dy * mx > my * dx;
+        return dy.multiply(mx).add(dx.multiply(ay)).subtract(dy.multiply(ax)).compareTo(my.multiply(dx)) > 0;
     }
 }
