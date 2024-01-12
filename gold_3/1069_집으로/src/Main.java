@@ -22,6 +22,11 @@ public class Main {
 
         reminder = dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
+        if ((double) d / t <= 1) {
+            System.out.println(reminder);
+            return;
+        }
+
         while (reminder > d * 2) {
             res += t;
             reminder -= d;
