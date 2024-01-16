@@ -95,7 +95,7 @@ public class Main {
             this.sec += time.sec;
 
             if (sec >= 60) {
-                this.sec /= 60;
+                this.sec %= 60;
                 this.min++;
             }
         }
