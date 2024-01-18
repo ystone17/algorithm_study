@@ -26,10 +26,10 @@ public class Main {
 
         dp = new String[m + 1];
 
-        System.out.println(solve(m));
+        System.out.println(solve(m, true));
     }
 
-    public static String solve(int money) {
+    public static String solve(int money, boolean isFirst) {
         if (dp[money] != null) {
             return dp[money];
         }
@@ -42,9 +42,16 @@ public class Main {
                 continue;
             }
 
-            String res = solve(money - prices[i]);
+            if (i == 0 && isFirst) {
+                cur = "0";
+                continue;
+            }
 
-            if (temp.length() <= res.length() && !(String.valueOf(i).equals("0") && !res.equals(""))) {
+            String res = solve(money - prices[i], false);
+
+            if (temp.length() <= res.length()) {
+
+
                 cur = String.valueOf(i);
                 temp = res;
             }
