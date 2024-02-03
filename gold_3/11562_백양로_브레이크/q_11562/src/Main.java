@@ -33,12 +33,9 @@ public class Main {
             dist[v][u] = b == 0 ? 1 : 0;
         }
 
-        for (int s = 1; s < n + 1; s++) {
-            for (int e = 1; e < n + 1; e++) {
-                if (s == e) {
-                    continue;
-                }
-                for (int m = 1; m < n + 1; m++) {
+        for (int m = 1; m < n + 1; m++) {
+            for (int s = 1; s < n + 1; s++) {
+                for (int e = 1; e < n + 1; e++) {
                     if (dist[s][e] > dist[s][m] + dist[m][e]) {
                         dist[s][e] = dist[s][m] + dist[m][e];
                     }
