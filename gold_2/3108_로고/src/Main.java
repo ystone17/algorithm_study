@@ -25,29 +25,27 @@ public class Main {
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
 
-            var rectangle = new Rectangle(
-                    rectangles.size(),
-                    Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()));
+            var rectangle = new Rectangle(rectangles.size(), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
 
             for (Rectangle rect : rectangles) {
                 if (rect.isInclude(rectangle)) {
-                    parent[rectangle.idx] = getParent(rect.idx);
-                    break;
+                    union(rectangle.idx, rect.idx);
                 }
             }
 
             rectangles.add(rectangle);
         }
 
+        for (int i = 0; i < parent.length; i++) {
+            parent[i] = getParent(i);
+        }
         var s = new HashSet<Integer>();
         for (int i : parent) {
             s.add(i);
         }
 
-        System.out.println(s.size());
+
+        System.out.println(s.size() - 1);
     }
 
     private static int getParent(int idx) {
@@ -56,6 +54,17 @@ public class Main {
         }
 
         return parent[idx] = getParent(parent[idx]);
+    }
+
+    private static void union(int a, int b) {
+        a = getParent(a);
+        b = getParent(b);
+
+        if (a < b) {
+            parent[b] = a;
+        } else {
+            parent[a] = b;
+        }
     }
 
 
@@ -75,6 +84,13 @@ public class Main {
         }
 
         public boolean isInclude(Rectangle r) {
+            if (x1 < r.x1 && r.x1 < x2
+                    && x1 < r.x2 && r.x2 < x2
+                    && y1 < r.y1 && r.y1 < y2
+                    && y1 < r.y2 && r.y2 < y2) {
+                return false;
+            }
+
             return x1 <= r.x1 && r.x1 <= x2 && y1 <= r.y1 && r.y1 <= y2
                     || x1 <= r.x1 && r.x1 <= x2 && y1 <= r.y2 && r.y2 <= y2
                     || x1 <= r.x2 && r.x2 <= x2 && y1 <= r.y1 && r.y1 <= y2
