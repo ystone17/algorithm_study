@@ -60,6 +60,10 @@ public class Main {
         a = getParent(a);
         b = getParent(b);
 
+        if (a == b) {
+            return;
+        }
+
         if (a < b) {
             parent[b] = a;
         } else {
@@ -84,17 +88,25 @@ public class Main {
         }
 
         public boolean isInclude(Rectangle r) {
-            if (x1 < r.x1 && r.x1 < x2
-                    && x1 < r.x2 && r.x2 < x2
-                    && y1 < r.y1 && r.y1 < y2
-                    && y1 < r.y2 && r.y2 < y2) {
+            if (x1 > r.x2 || x2 < r.x1) {
                 return false;
             }
 
-            return x1 <= r.x1 && r.x1 <= x2 && y1 <= r.y1 && r.y1 <= y2
-                    || x1 <= r.x1 && r.x1 <= x2 && y1 <= r.y2 && r.y2 <= y2
-                    || x1 <= r.x2 && r.x2 <= x2 && y1 <= r.y1 && r.y1 <= y2
-                    || x1 <= r.x2 && r.x2 <= x2 && y1 <= r.y2 && r.y2 <= y2;
+            if (y1 > r.y2 || y2 < r.y1) {
+                return false;
+            }
+
+            if (x1 < r.x1 && r.x1 < x2 && y1 < r.y1 && r.y1 < y2
+                    && x1 < r.x2 && r.x2 < x2 && y1 < r.y2 && r.y2 < y2) {
+                return false;
+            }
+
+            if (r.x1 < x1 && x1 < r.x2 && r.y1 < y1 && y1 < r.y2
+                    && r.x1 < x2 && x2 < r.x2 && r.y1 < y2 && y2 < r.y2) {
+                return false;
+            }
+
+            return true;
         }
     }
 
