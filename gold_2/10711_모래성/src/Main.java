@@ -16,6 +16,8 @@ public class Main {
 
     static int h, w, res;
     static char[][] map;
+    static int[][] counts;
+    static boolean[][] visited;
     static Queue<Pos> q = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
@@ -25,6 +27,8 @@ public class Main {
         w = Integer.parseInt(st.nextToken());
 
         map = new char[h][w];
+        counts = new int[h][w];
+        visited = new boolean[h][w];
 
         for (int i = 0; i < h; i++) {
             map[i] = br.readLine().toCharArray();
@@ -36,25 +40,21 @@ public class Main {
                     continue;
                 }
 
-                if (canDelete(y, x, map[y][x] - '0')) {
+                counts[y][x] = getSendCount(y, x);
+                if (counts[y][x] >= map[y][x] - '0') {
                     q.add(new Pos(y, x));
+                    visited[y][x] = true;
                 }
             }
         }
 
         while (!q.isEmpty()) {
-            var size = q.size();
-            for (int i = 0; i < size; i++) {
-                var cur = q.peek();
-                map[cur.y][cur.x] = '.';
-                q.add(q.poll());
-            }
-
             res++;
 
-            size = q.size();
+            var size = q.size();
             for (int i = 0; i < size; i++) {
                 var cur = q.poll();
+                map[cur.y][cur.x] = '.';
 
                 for (int dir = 0; dir < 8; dir++) {
                     int ny = cur.y + dy[dir];
@@ -64,12 +64,17 @@ public class Main {
                         continue;
                     }
 
+                    if (visited[ny][nx]) {
+                        continue;
+                    }
+
                     if (map[ny][nx] == '.') {
                         continue;
                     }
 
-                    if (canDelete(ny, nx, map[ny][nx] - '0')) {
+                    if (++counts[ny][nx] >= map[ny][nx] - '0') {
                         q.add(new Pos(ny, nx));
+                        visited[ny][nx] = true;
                     }
                 }
             }
@@ -79,7 +84,7 @@ public class Main {
 
     }
 
-    static boolean canDelete(int y, int x, int health) {
+    static int getSendCount(int y, int x) {
         var sandCount = 0;
 
         for (int dir = 0; dir < 8; dir++) {
@@ -95,7 +100,7 @@ public class Main {
             }
         }
 
-        return sandCount >= health;
+        return sandCount;
     }
 
     static class Pos {
