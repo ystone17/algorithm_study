@@ -2,9 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.PriorityQueue;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 
@@ -12,18 +10,12 @@ public class Main {
     static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
-    static PriorityQueue<Counter> pq = new PriorityQueue<>((o1, o2) -> {
-        if (o1.cashTime != o2.cashTime) {
-            return Integer.compare(o1.cashTime, o2.cashTime);
-        }
-
-        return Integer.compare(o1.no, o2.no);
-    });
-    static Stack<Counter> stack = new Stack<>();
-    static int n, k, count = 1;
+    static PriorityQueue<Counter> pq = new PriorityQueue<>();
+    static List<Customer> customers = new ArrayList<>();
+    static List<Integer> seq = new ArrayList<>();
+    static int[] used;
+    static int n, k;
     static BigInteger res = BigInteger.ZERO;
-    static boolean[] counterUsed;
-    static int[] times;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -31,79 +23,84 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
 
-        counterUsed = new boolean[n + 1];
-        times = new int[n + 1];
+        used = new int[k];
 
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            int customerNo = Integer.parseInt(st.nextToken());
+            int no = Integer.parseInt(st.nextToken());
             int weight = Integer.parseInt(st.nextToken());
 
+            customers.add(new Customer(no, weight));
+        }
+
+        int time = 0;
+        int counterNo = 0;
+        for (Customer customer : customers) {
             if (pq.size() < k) {
-                for (int j = 1; j < counterUsed.length; j++) {
-                    if (!counterUsed[j]) {
-                        pq.add(new Counter(j, customerNo, times[j] + weight));
-                        times[j] += weight;
-                        counterUsed[j] = true;
+                for (int i = 0; i < used.length; i++) {
+                    if (used[i] == 0) {
+                        pq.add(new Counter(customer.no, time + customer.weight, i));
+                        used[i] = 1;
                         break;
                     }
                 }
                 continue;
             }
 
-            var targetCounter = pq.poll();
-            stack.add(targetCounter);
-            while (!pq.isEmpty() && pq.peek().cashTime == targetCounter.cashTime) {
-                stack.add(pq.poll());
+            time = pq.peek().cashTime;
+
+            while (pq.peek().cashTime == time) {
+                var counter = pq.poll();
+                counterNo = counter.no;
+                used[counterNo] = 0;
+                seq.add(counter.customerNo);
             }
 
-            while (!stack.isEmpty()) {
-                var pop = stack.pop();
-                res = res.add(BigInteger.valueOf(pop.customerNo).multiply(BigInteger.valueOf(count++)));
-                counterUsed[pop.no] = false;
-            }
+            pq.add(new Counter(customer.no, time + customer.weight, counterNo));
+        }
 
-            pq.add(new Counter(targetCounter.no, customerNo, times[targetCounter.no] + weight));
-            counterUsed[targetCounter.no] = true;
-            times[targetCounter.no] += weight;
+        while (!pq.isEmpty()) {
+            seq.add(pq.poll().customerNo);
         }
 
 
-        while (!pq.isEmpty()) {
-            var targetCounter = pq.poll();
-            stack.add(targetCounter);
-            while (!pq.isEmpty() && pq.peek().cashTime == targetCounter.cashTime) {
-                stack.add(pq.poll());
-            }
-
-            while (!stack.isEmpty()) {
-                var pop = stack.pop();
-                res = res.add(BigInteger.valueOf(pop.customerNo).multiply(BigInteger.valueOf(count++)));
-                counterUsed[pop.no] = false;
-            }
+        for (int i = 0; i < seq.size(); i++) {
+            Integer customerNo = seq.get(i);
+            res = res.add(BigInteger.valueOf(customerNo).multiply(BigInteger.valueOf(i + 1)));
         }
 
         System.out.println(res);
     }
 
-    static class Counter {
-        int no;
+    static class Counter implements Comparable<Counter> {
         int customerNo;
         int cashTime;
+        int no;
 
-        public Counter(int no, int customerNo, int cashTime) {
-            this.no = no;
+        public Counter(int customerNo, int cashTime, int no) {
             this.customerNo = customerNo;
             this.cashTime = cashTime;
+            this.no = no;
         }
 
         @Override
-        public String toString() {
-            return "Counter{" +
-                    "no=" + no +
-                    ", customerNo=" + customerNo +
-                    ", cashTime=" + cashTime +
-                    '}';
+        public int compareTo(Counter o) {
+            if (this.cashTime != o.cashTime) {
+
+                return Integer.compare(this.cashTime, o.cashTime);
+            }
+
+            return Integer.compare(o.no, this.no);
+        }
+    }
+
+    static class Customer {
+        int no;
+        int weight;
+
+        public Customer(int no, int weight) {
+            this.no = no;
+            this.weight = weight;
         }
     }
 }
