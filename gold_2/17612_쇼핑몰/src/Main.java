@@ -13,17 +13,15 @@ public class Main {
     static PriorityQueue<Counter> pq = new PriorityQueue<>();
     static List<Customer> customers = new ArrayList<>();
     static List<Integer> seq = new ArrayList<>();
-    static int[] used;
+    static Stack<Integer> used = new Stack<>();
     static int n, k;
-    static BigInteger res = BigInteger.ZERO;
+    static long res;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
-
-        used = new int[k];
 
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
@@ -33,40 +31,36 @@ public class Main {
             customers.add(new Customer(no, weight));
         }
 
+        for (int i = k - 1; i >= 0; i--) {
+            used.add(i);
+        }
+
         int time = 0;
-        int counterNo = 0;
         for (Customer customer : customers) {
             if (pq.size() < k) {
-                for (int i = 0; i < used.length; i++) {
-                    if (used[i] == 0) {
-                        pq.add(new Counter(customer.no, time + customer.weight, i));
-                        used[i] = 1;
-                        break;
-                    }
-                }
+                var nextCounterNo = used.pop();
+                pq.add(new Counter(customer.no, time + customer.weight, nextCounterNo));
                 continue;
             }
 
             time = pq.peek().cashTime;
 
-            while (pq.peek().cashTime == time) {
+            while (!pq.isEmpty() && pq.peek().cashTime == time) {
                 var counter = pq.poll();
-                counterNo = counter.no;
-                used[counterNo] = 0;
+                used.add(counter.no);
                 seq.add(counter.customerNo);
             }
 
-            pq.add(new Counter(customer.no, time + customer.weight, counterNo));
+            var nextCounterNo = used.pop();
+            pq.add(new Counter(customer.no, time + customer.weight, nextCounterNo));
         }
 
         while (!pq.isEmpty()) {
             seq.add(pq.poll().customerNo);
         }
 
-
         for (int i = 0; i < seq.size(); i++) {
-            Integer customerNo = seq.get(i);
-            res = res.add(BigInteger.valueOf(customerNo).multiply(BigInteger.valueOf(i + 1)));
+            res += (long) (seq.get(i)) * (i + 1);
         }
 
         System.out.println(res);
