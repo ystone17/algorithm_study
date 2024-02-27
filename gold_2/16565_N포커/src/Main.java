@@ -33,7 +33,7 @@ public class Main {
                 continue;
             }
 
-            res = (res + MOD - combine[13][i] * combine[52 - i * 4][n - i * 4]) % MOD;
+            res = (res + MOD - (combine[13][i] * combine[52 - i * 4][n - i * 4]) % MOD) % MOD;
         }
 
         System.out.println(res);
