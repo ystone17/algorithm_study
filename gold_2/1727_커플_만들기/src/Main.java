@@ -11,8 +11,7 @@ public class Main {
 
     static List<Integer> men = new ArrayList<>();
     static List<Integer> women = new ArrayList<>();
-    static List<Integer> smallList;
-    static Queue<Integer> q = new LinkedList<>();
+    static int[] memoization;
 
     static int man, woman, res;
 
@@ -34,38 +33,43 @@ public class Main {
 
         Collections.sort(men);
         Collections.sort(women);
-        if (man < woman) {
-            smallList = men;
-            q.addAll(women);
+        memoization = new int[Math.min(man, woman)];
+        memoization[memoization.length - 1] = Math.abs(men.get(man - 1) - women.get(woman - 1));
+        for (int idx = memoization.length - 2; idx >= 0; idx--) {
+            var i = memoization.length - idx;
+            memoization[idx] = memoization[idx + 1] + Math.abs(men.get(man - i) - women.get(woman - i));
+        }
+
+        if (man > woman) {
+            System.out.println(backTracking(women, 0, men, 0));
         } else {
-            smallList = women;
-            q.addAll(men);
+            System.out.println(backTracking(men, 0, women, 0));
         }
-
-        for (int i = 0; i < smallList.size(); i++) {
-            Integer s = smallList.get(i);
-
-            if (smallList.size() - i == q.size()) {
-                res += Math.abs(s - q.poll());
-                continue;
-            }
-
-            var temp = 0;
-            while (!q.isEmpty()) {
-                temp = q.poll();
-                if (smallList.size() - i > q.size()) {
-                    break;
-                }
-
-                if (Math.abs(s - temp) <= Math.abs(s - q.peek())) {
-                    break;
-                }
-            }
-
-            res += Math.abs(s - temp);
-        }
-
-        System.out.println(res);
 
     }
+
+    static int backTracking(List<Integer> small,
+                            int smallIdx,
+                            List<Integer> big,
+                            int bigIdx) {
+        if (smallIdx >= small.size()) {
+            return 0;
+        }
+
+        if (big.size() - bigIdx == small.size() - smallIdx) {
+            return memoization[smallIdx];
+        }
+
+        var minBt = Integer.MAX_VALUE;
+        var bIdx = bigIdx;
+        while (small.size() - smallIdx != big.size() - bIdx) {
+            var cur = Math.abs(small.get(smallIdx) - big.get(bigIdx));
+            var res = backTracking(small, smallIdx + 1, big, bigIdx + 1);
+            minBt = Math.min(minBt, cur + res);
+            bIdx++;
+        }
+
+        return minBt;
+    }
+
 }
