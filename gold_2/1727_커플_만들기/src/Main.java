@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -12,6 +13,7 @@ public class Main {
     static List<Integer> men = new ArrayList<>();
     static List<Integer> women = new ArrayList<>();
     static int[] memoization;
+    static int[][] dp = new int[1001][1001];
 
     static int man, woman, res;
 
@@ -40,6 +42,10 @@ public class Main {
             memoization[idx] = memoization[idx + 1] + Math.abs(men.get(man - i) - women.get(woman - i));
         }
 
+        for (int[] ints : dp) {
+            Arrays.fill(ints, -1);
+        }
+
         if (man > woman) {
             System.out.println(backTracking(women, 0, men, 0));
         } else {
@@ -56,6 +62,10 @@ public class Main {
             return 0;
         }
 
+        if (dp[smallIdx][bigIdx] != -1) {
+            return dp[smallIdx][bigIdx];
+        }
+
         if (big.size() - bigIdx == small.size() - smallIdx) {
             return memoization[smallIdx];
         }
@@ -69,7 +79,7 @@ public class Main {
             bIdx++;
         }
 
-        return minBt;
+        return dp[smallIdx][bigIdx] = minBt;
     }
 
 }
