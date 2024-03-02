@@ -1,13 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
     static StringTokenizer st;
 
     static List<Integer> men = new ArrayList<>();
@@ -15,7 +13,8 @@ public class Main {
     static int[] memoization;
     static int[][] dp = new int[1001][1001];
 
-    static int man, woman, res;
+    static int man;
+    static int woman;
 
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
@@ -51,7 +50,6 @@ public class Main {
         } else {
             System.out.println(backTracking(men, 0, women, 0));
         }
-
     }
 
     static int backTracking(List<Integer> small,
