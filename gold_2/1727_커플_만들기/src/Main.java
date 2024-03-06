@@ -10,7 +10,7 @@ public class Main {
 
     static List<Integer> men = new ArrayList<>();
     static List<Integer> women = new ArrayList<>();
-    static int[] memoization;
+
     static int[][] dp = new int[1001][1001];
 
     static int man;
@@ -34,50 +34,45 @@ public class Main {
 
         Collections.sort(men);
         Collections.sort(women);
-        memoization = new int[Math.min(man, woman)];
-        memoization[memoization.length - 1] = Math.abs(men.get(man - 1) - women.get(woman - 1));
-        for (int idx = memoization.length - 2; idx >= 0; idx--) {
-            var i = memoization.length - idx;
-            memoization[idx] = memoization[idx + 1] + Math.abs(men.get(man - i) - women.get(woman - i));
-        }
 
-        for (int[] ints : dp) {
-            Arrays.fill(ints, -1);
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
         }
 
         if (man > woman) {
-            System.out.println(backTracking(women, 0, men, 0));
+            System.out.println(solve(women, 0, men, 0));
         } else {
-            System.out.println(backTracking(men, 0, women, 0));
+            System.out.println(solve(men, 0, women, 0));
         }
     }
 
-    static int backTracking(List<Integer> small,
-                            int smallIdx,
-                            List<Integer> big,
-                            int bigIdx) {
-        if (smallIdx >= small.size()) {
-            return 0;
+    static int solve(List<Integer> small,
+                      int smallIdx,
+                      List<Integer> big,
+                      int bigIdx) {
+        if (smallIdx >= small.size() || bigIdx >= big.size()) {
+            return -1;
         }
 
-        if (dp[smallIdx][bigIdx] != -1) {
+        if (dp[smallIdx][bigIdx] >= 0) {
             return dp[smallIdx][bigIdx];
         }
 
-        if (big.size() - bigIdx == small.size() - smallIdx) {
-            return memoization[smallIdx];
+        var res = 1_000_000_000;
+        var base = Math.abs(small.get(smallIdx) - big.get(bigIdx));
+
+        for (int i = bigIdx; i <= big.size() - (small.size() - smallIdx); i++) {
+            var s = solve(small, smallIdx + 1, big, i + 1);
+            if (s == -1) {
+                continue;
+            }
+
+            if (res > base + s) {
+                res = base + s;
+            }
         }
 
-        var minBt = Integer.MAX_VALUE;
-        var bIdx = bigIdx;
-        while (small.size() - smallIdx != big.size() - bIdx) {
-            var cur = Math.abs(small.get(smallIdx) - big.get(bigIdx));
-            var res = backTracking(small, smallIdx + 1, big, bigIdx + 1);
-            minBt = Math.min(minBt, cur + res);
-            bIdx++;
-        }
-
-        return dp[smallIdx][bigIdx] = minBt;
+        return dp[smallIdx][bigIdx] = res;
     }
 
 }
