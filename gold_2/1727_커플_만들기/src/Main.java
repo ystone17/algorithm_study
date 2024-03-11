@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -10,8 +11,9 @@ public class Main {
 
     static List<Integer> men = new ArrayList<>();
     static List<Integer> women = new ArrayList<>();
+    static List<Integer> small, big;
 
-    static int[][] dp = new int[1001][1001];
+    static int[][] dp, partitionMin;
 
     static int man;
     static int woman;
@@ -35,44 +37,30 @@ public class Main {
         Collections.sort(men);
         Collections.sort(women);
 
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-
-        if (man > woman) {
-            System.out.println(solve(women, 0, men, 0));
+        if (man < woman) {
+            small = men;
+            big = women;
         } else {
-            System.out.println(solve(men, 0, women, 0));
-        }
-    }
-
-    static int solve(List<Integer> small,
-                      int smallIdx,
-                      List<Integer> big,
-                      int bigIdx) {
-        if (smallIdx >= small.size() || bigIdx >= big.size()) {
-            return -1;
+            small = women;
+            big = men;
         }
 
-        if (dp[smallIdx][bigIdx] >= 0) {
-            return dp[smallIdx][bigIdx];
+        dp = new int[small.size() + 1][big.size() + 1];
+        for (int[] row : dp) {
+            Arrays.fill(row, Integer.MAX_VALUE);
         }
+        partitionMin = new int[small.size() + 1][big.size() + 1];
+        Arrays.fill(partitionMin[small.size()], 0);
 
-        var res = 1_000_000_000;
-        var base = Math.abs(small.get(smallIdx) - big.get(bigIdx));
+        for (int y = small.size() - 1; y >= 0; y--) {
+            for (int x = y + small.size() - 1; x >= y; x--) {
 
-        for (int i = bigIdx; i <= big.size() - (small.size() - smallIdx); i++) {
-            var s = solve(small, smallIdx + 1, big, i + 1);
-            if (s == -1) {
-                continue;
-            }
-
-            if (res > base + s) {
-                res = base + s;
+                var abs = Math.abs(small.get(y) - big.get(x));
+                dp[y][x] = abs + partitionMin[y + 1][x + 1];
+                partitionMin[y][x] = Math.min(dp[y][x], dp[y][x + 1]);
             }
         }
 
-        return dp[smallIdx][bigIdx] = res;
-    }
 
+    }
 }
