@@ -50,17 +50,23 @@ public class Main {
             Arrays.fill(row, Integer.MAX_VALUE);
         }
         partitionMin = new int[small.size() + 1][big.size() + 1];
-        Arrays.fill(partitionMin[small.size()], 0);
 
         for (int y = small.size() - 1; y >= 0; y--) {
-            for (int x = y + small.size() - 1; x >= y; x--) {
+            for (int x = big.size() - 1; x >= 0; x--) {
+                if (y > x) {
+                    continue;
+                }
+
+                if (big.size() - x < small.size() - y) {
+                    continue;
+                }
 
                 var abs = Math.abs(small.get(y) - big.get(x));
                 dp[y][x] = abs + partitionMin[y + 1][x + 1];
-                partitionMin[y][x] = Math.min(dp[y][x], dp[y][x + 1]);
+                partitionMin[y][x] = Math.min(dp[y][x], partitionMin[y][x + 1]);
             }
         }
 
-
+        System.out.println(partitionMin[0][0]);
     }
 }
