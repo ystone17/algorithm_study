@@ -29,10 +29,12 @@ public class Main {
             Arrays.sort(seq);
 
             int min = 0;
+            int max = 0;
             for (int i : seq) {
                 min = Math.max(min, Math.min(i, l - i));
+                max = Math.max(max, Math.max(i, l - i));
             }
-            sb.append(min).append("\n");
+            sb.append(String.format("%d %d\n", min, max));
         }
 
         System.out.println(sb);
