@@ -50,6 +50,16 @@ public class Main {
             Arrays.fill(row, Integer.MAX_VALUE);
         }
         partitionMin = new int[small.size() + 1][big.size() + 1];
+        for (int[] row : partitionMin) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+//        partitionMin[small.size()][big.size()] = 0;
+//        for (int i = 0; i < small.size(); i++) {
+//            partitionMin[i][big.size()] = 0;
+//        }
+//        for (int i = 0; i <= big.size(); i++) {
+//            partitionMin[small.size()][i] = 0;
+//        }
 
         for (int y = small.size() - 1; y >= 0; y--) {
             for (int x = big.size() - 1; x >= 0; x--) {
@@ -62,8 +72,12 @@ public class Main {
                 }
 
                 var abs = Math.abs(small.get(y) - big.get(x));
-                dp[y][x] = abs + partitionMin[y + 1][x + 1];
-                partitionMin[y][x] = Math.min(dp[y][x], partitionMin[y][x + 1]);
+                if(y == small.size() -1) {
+                    dp[y][x] =
+                } else {
+                    dp[y][x] = abs + partitionMin[y + 1][x + 1];
+                    partitionMin[y][x] = Math.min(dp[y][x], partitionMin[y][x + 1]);
+                }
             }
         }
 
