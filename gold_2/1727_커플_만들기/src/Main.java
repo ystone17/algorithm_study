@@ -13,7 +13,7 @@ public class Main {
     static List<Integer> women = new ArrayList<>();
     static List<Integer> small, big;
 
-    static int[][] dp, partitionMin;
+    static int[][] dp;
 
     static int man;
     static int woman;
@@ -45,42 +45,25 @@ public class Main {
             big = men;
         }
 
-        dp = new int[small.size() + 1][big.size() + 1];
-        for (int[] row : dp) {
-            Arrays.fill(row, Integer.MAX_VALUE);
-        }
-        partitionMin = new int[small.size() + 1][big.size() + 1];
-        for (int[] row : partitionMin) {
-            Arrays.fill(row, Integer.MAX_VALUE);
-        }
-//        partitionMin[small.size()][big.size()] = 0;
-//        for (int i = 0; i < small.size(); i++) {
-//            partitionMin[i][big.size()] = 0;
-//        }
-//        for (int i = 0; i <= big.size(); i++) {
-//            partitionMin[small.size()][i] = 0;
-//        }
+        dp = new int[small.size()][big.size()];
 
-        for (int y = small.size() - 1; y >= 0; y--) {
-            for (int x = big.size() - 1; x >= 0; x--) {
-                if (y > x) {
+        dp[0][0] = Math.abs(small.get(0) - big.get(0));
+        for (int i = 1; i < big.size(); i++) {
+            dp[0][i] = Math.min(dp[0][i - 1], Math.abs(small.get(0) - big.get(i)));
+        }
+
+        for (int i = 1; i < small.size(); i++) {
+            for (int j = 0; j < big.size(); j++) {
+                if (j < i) {
+                    dp[i][j] = Integer.MAX_VALUE;
                     continue;
                 }
 
-                if (big.size() - x < small.size() - y) {
-                    continue;
-                }
-
-                var abs = Math.abs(small.get(y) - big.get(x));
-                if(y == small.size() -1) {
-                    dp[y][x] =
-                } else {
-                    dp[y][x] = abs + partitionMin[y + 1][x + 1];
-                    partitionMin[y][x] = Math.min(dp[y][x], partitionMin[y][x + 1]);
-                }
+                dp[i][j] = dp[i - 1][j - 1] + Math.abs(small.get(i) - big.get(j));
+                dp[i][j] = Math.min(dp[i][j], dp[i][j - 1]);
             }
         }
 
-        System.out.println(partitionMin[0][0]);
+        System.out.println(dp[small.size() - 1][big.size() - 1]);
     }
 }
