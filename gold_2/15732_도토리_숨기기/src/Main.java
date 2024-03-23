@@ -53,8 +53,8 @@ public class Main {
         return left;
     }
 
-    static int total(int boxNum) {
-        int total = 0;
+    static long total(int boxNum) {
+        long total = 0;
         for (Rule rule : rules) {
             total += rule.total(boxNum);
         }
@@ -75,11 +75,11 @@ public class Main {
         }
 
         public int total(int boxNum) {
-            if (boxNum < a || b < boxNum) {
+            if (boxNum < a) {
                 return 0;
             }
 
-            return (boxNum - a) / c + 1;
+            return (Math.min(boxNum, b) - a) / c + 1;
         }
     }
 }
